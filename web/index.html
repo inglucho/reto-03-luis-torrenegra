@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agente Periferia</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div>
+          <h1>Agente Periferia</h1>
+          <p class="meta" id="meta">Cargando…</p>
+        </div>
+        <button type="button" class="ghost" id="reset">Nueva conversación</button>
+      </header>
+
+      <main class="log" id="log" aria-live="polite">
+        <div class="empty" id="empty">
+          <p>Escribe una instrucción para empezar.</p>
+          <p class="hint">Cada llamada a herramienta aparece como tarjeta. Cuando el agente necesita tu confirmación, el turno se resalta.</p>
+        </div>
+      </main>
+
+      <form class="composer" id="composer">
+        <textarea id="input" rows="1" placeholder="Escribe un mensaje…" autocomplete="off"></textarea>
+        <button type="submit" id="send">Enviar</button>
+      </form>
+    </div>
+    <script type="module" src="./app.ts"></script>
+  </body>
+</html>
