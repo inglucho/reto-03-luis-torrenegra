@@ -5,10 +5,10 @@ const PROVEEDOR = "gemini";
 /** Modelo principal; se cambia con LLM_MODEL. */
 export const MODELO_GEMINI = "gemini-3.5-flash";
 /**
- * Respaldo cuando el principal está saturado (503) o se agotó su cuota gratuita (429).
- * En la capa gratuita los modelos más nuevos suelen saturarse en horas pico.
+ * Respaldo, en orden, cuando el modelo anterior está saturado (503) o agotó su cuota gratuita (429).
+ * En la capa gratuita cada modelo tiene su propia cuota, así que encadenarlos multiplica la capacidad.
  */
-export const RESPALDO_GEMINI = ["gemini-3.5-flash-lite"];
+export const RESPALDO_GEMINI = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
 const REINTENTABLES = new Set([429, 503]);
 /** Prefijo de los ids que genera el adaptador cuando Gemini no asigna uno a la llamada. */
 const ID_LOCAL = "local-";

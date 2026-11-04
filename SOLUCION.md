@@ -53,12 +53,12 @@ El ciclo es propio (`src/core/agente.ts`, menos de 200 líneas) y no depende del
 
 ## 4. Elección del modelo
 
-**Proveedor y modelo:** Google Gemini, `gemini-3.5-flash`, con respaldo automático a `gemini-3.5-flash-lite`.
+**Proveedor y modelo:** Google Gemini, `gemini-3.5-flash`, con respaldo automático a `gemini-3.5-flash-lite` y luego a `gemini-3.1-flash-lite`.
 
 **Por qué:**
 - **Costo cero para la demo.** La capa gratuita de Google AI Studio no exige tarjeta. Así se cumple el requisito de que nadie pueda gastar la clave sin límite: en la capa gratuita no hay facturación posible.
 - **Llamada a herramientas fiable.** En las pruebas reales encadenó validar → construir → crear sin errores, y respetó el flujo de confirmación.
-- **Disponibilidad.** En la capa gratuita, los modelos más nuevos a veces responden 503 (saturado) o 429 (cuota). El adaptador cambia al modelo lite en la misma petición, siempre que aún no haya emitido texto al usuario. En la prueba del lote completo ocurrió dos veces con 429 y el usuario no lo notó.
+- **Disponibilidad.** En la capa gratuita, los modelos más nuevos a veces responden 503 (saturado) o 429 (cuota). El adaptador pasa al siguiente modelo de respaldo en la misma petición, siempre que aún no haya emitido texto al usuario. Cada modelo tiene su propia cuota, así que encadenar tres multiplica la capacidad. En la prueba del lote completo ocurrió dos veces con 429 y el usuario no lo notó.
 - **Independencia del proveedor.** Hay una segunda implementación (`anthropic.ts`) y se cambia con `LLM_PROVIDER=anthropic`, sin tocar el ciclo del agente.
 
 **Costo estimado por caso.** Medí el consumo real con Gemini:

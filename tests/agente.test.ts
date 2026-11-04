@@ -134,6 +134,20 @@ describe("CA3: confirmación humana", () => {
     expect(t.sesion.esperandoConfirmacion).toBe(false);
   });
 
+  test("si en el mismo turno se confirma y se ejecuta bien, el turno ya no queda pendiente", async () => {
+    const t = preparar([
+      llama("t1", "ejemplo_aprobar", { codigo: "R-002" }),
+      responde("¿Confirmas?"),
+      llama("t2", "ejemplo_aprobar", { codigo: "R-002" }),
+      llama("t3", "ejemplo_aprobar", { codigo: "R-002", confirmado: true }),
+      responde("Aprobado"),
+    ]);
+    await t.agente.turno(t.sesion, "aprueba R-002", t.emitir);
+    t.eventos.length = 0;
+    await t.agente.turno(t.sesion, "Confirmo", t.emitir);
+    expect(t.eventos.at(-1)).toMatchObject({ tipo: "fin_turno", necesitaConfirmacion: false });
+  });
+
   test("el backend bloquea `confirmado: true` si el modelo lo usa sin que el usuario confirme", async () => {
     const t = preparar([llama("t1", "ejemplo_aprobar", { codigo: "R-002", confirmado: true }), responde("Ups")]);
     await t.agente.turno(t.sesion, "aprueba R-002", t.emitir);

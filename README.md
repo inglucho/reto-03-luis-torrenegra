@@ -40,7 +40,7 @@ Otros comandos: `bun test` (46 tests, sin clave), `bun run typecheck`, `bun run 
 | Variable | Uso | Por defecto |
 |---|---|---|
 | `LLM_PROVIDER` | Proveedor de lenguaje: `gemini` o `anthropic` | `gemini` |
-| `LLM_MODEL` | Modelo; vacío = el del proveedor | `gemini-3.5-flash` (respaldo automático a `gemini-3.5-flash-lite`) |
+| `LLM_MODEL` | Modelo; vacío = el del proveedor | `gemini-3.5-flash` (respaldo automático a `gemini-3.5-flash-lite` y `gemini-3.1-flash-lite`) |
 | `LLM_API_KEY` | Clave del proveedor. Solo en el entorno del backend: nunca en el repo, el front, los logs ni la API | — |
 | `LLM_TIMEOUT_MS` | Tiempo máximo de espera al proveedor | `120000` |
 | `MAX_ITERACIONES` | Rondas herramienta → modelo por turno | `25` |

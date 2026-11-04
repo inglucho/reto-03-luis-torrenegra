@@ -53,7 +53,8 @@ export class Agente {
     sesion.mensajes.push({ rol: "usuario", texto });
 
     const uso: UsoTurno = { llamadasModelo: 0, tokensEntrada: 0, tokensSalida: 0, tokensCache: 0, tokensSesion: 0 };
-    let necesitaConfirmacion = false;
+    // Estado final por herramienta: si pidió confirmación y luego se ejecutó bien en el mismo turno, ya no está pendiente.
+    const pendientes = new Map<string, boolean>();
 
     for (let iteracion = 1; ; iteracion++) {
       if (sesion.tokensUsados >= this.maxTokensSesion) {
@@ -106,7 +107,8 @@ export class Agente {
       for (const llamada of respuesta.llamadas) {
         const { resultado, pideConfirmacion } = await this.ejecutarLlamada(sesion, llamada, confirmaAhora, emitir);
         resultados.push(resultado);
-        if (pideConfirmacion) necesitaConfirmacion = true;
+        if (pideConfirmacion) pendientes.set(llamada.nombre, true);
+        else if (!resultado.error) pendientes.set(llamada.nombre, false);
       }
       sesion.mensajes.push({
         rol: "herramientas",
@@ -115,6 +117,7 @@ export class Agente {
       });
     }
 
+    const necesitaConfirmacion = [...pendientes.values()].some(Boolean);
     sesion.esperandoConfirmacion = necesitaConfirmacion;
     uso.tokensSesion = sesion.tokensUsados;
     emitir({ tipo: "fin_turno", necesitaConfirmacion, uso });
