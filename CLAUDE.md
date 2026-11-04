@@ -1,35 +1,26 @@
-# Agente Periferia (prueba técnica)
+# Reto 03 — Órdenes de Compra SAP (prueba técnica Periferia)
 
-Agente conversacional en TypeScript + Bun para la prueba técnica de IA de Periferia IT Group. El PRD de cada reto (sección 6) fija la arquitectura: respetar nombres de archivo, contrato de herramientas y API.
+Agente conversacional en TypeScript + Bun. El PRD está en `docs/PRD.md`; su sección 6 fija la arquitectura (nombres de archivo, contrato de herramientas, API) y la 7 las reglas RC1–RC10. El PRD manda sobre cualquier suposición.
 
 ## Comandos
 
-- `bun run dev`: servidor con recarga en http://localhost:3000 (el chat requiere `LLM_API_KEY`)
-- `bun run demo.ts`: verificación determinista de las herramientas, sin modelo
-- `bun test`: ciclo del agente con adaptador LLM guionizado
-- `bun run typecheck`: tipos
+- `bun run dev`: servidor en http://localhost:3000 (el chat requiere `LLM_API_KEY` en `.env`)
+- `bun run demo.ts`: los 6 casos sin modelo, con verificación del resultado esperado
+- `bun test` · `bun run typecheck` · `bun run modulo` (regenera `modulo/`)
 
 Antes de cada commit: `bun run typecheck && bun test && bun run demo.ts`.
 
-## Estructura
+## Dónde va cada cosa
 
-- `agent/prompt.md`: comportamiento. `src/knowledge/*.md`: conocimiento del proceso. `src/tools/<dominio>.ts`: ejecución.
-- `src/dominio.ts`: único archivo que conecta el dominio (import de herramientas + prefijo).
-- `src/core/`: ciclo del agente, contrato de herramientas, confirmación, sesiones, bitácora. Sin dependencias de un proveedor LLM ni de un dominio.
-- `src/llm/`: interfaz `AdaptadorLLM` con implementaciones de Gemini (por defecto, gratuita) y Anthropic. Leer los tipos del SDK instalado antes de usar su API.
-- `web/`: chat en TypeScript sin framework, empaquetado por Bun.
-
-## Contrato de herramientas (PRD 6.2)
-
-- Cada export es `{ description, args, execute(args, ctx) }`; el modelo la ve como `<archivo>_<export>`.
-- `args`: esquemas zod con `.describe()` en cada campo.
-- `execute` devuelve un string JSON con `ok(data)`, `fallo(error)` o `pideConfirmacion(motivo)` y **nunca lanza**.
-- Las acciones de escritura aceptan `confirmado?: boolean`; sin él devuelven `pideConfirmacion`.
+- Comportamiento → `agent/prompt.md`. Conocimiento → `src/knowledge/ordenes-compra.md`. Ejecución → `src/tools/oc.ts`.
+- Reglas de negocio → `src/oc/reglas.ts` (funciones puras). Nunca en el prompt ni en el servidor.
+- Tras editar el prompt o el conocimiento, ejecutar `bun run modulo`; un test falla si `modulo/` queda desactualizado.
+- `fixtures/` es de solo lectura; todo lo generado va a `out/`.
 
 ## Convenciones
 
-- Código, comentarios y mensajes en español. TypeScript sin `any`.
-- Las reglas de negocio viven en las herramientas, no en el prompt: así son deterministas y `demo.ts` las verifica.
-- El historial de la sesión solo crece; no reescribir mensajes anteriores.
-- Ninguna clave en el código, el repo, el front ni los logs: solo `LLM_API_KEY` en el entorno.
-- Nunca hacer commit en `main`: cada cambio va en una rama `feat/…`, `fix/…` o `docs/…` y entra por pull request.
+- Herramientas: `{ description, args, execute(args, ctx) }`, devuelven string JSON y **nunca lanzan**. Recalculan todo desde los fixtures; lo que envía el modelo solo se compara.
+- La confirmación la decide la herramienta (`confirmacion` en el resultado); el backend solo deja pasar `confirmado: true` tras una confirmación real del usuario.
+- Código y mensajes en español, TypeScript sin `any`, funciones cortas.
+- Ninguna clave en el repo: solo `LLM_API_KEY` en el entorno.
+- Nunca hacer commit en `main`: ramas `feat/…`, `fix/…`, `docs/…` y pull request.

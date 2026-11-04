@@ -1,5 +1,5 @@
 {
-  "name": "periferia-agente",
+  "name": "reto-03-ordenes-compra",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,8 @@
     "start": "NODE_ENV=production bun src/server.ts",
     "demo": "bun demo.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "modulo": "bun scripts/generar-modulo.ts"
   },
   "engines": {
     "bun": ">=1.2"
