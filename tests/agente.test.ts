@@ -37,7 +37,7 @@ function guionizado(respuestas: RespuestaLLM[]) {
 function preparar(respuestas: RespuestaLLM[], opciones: { maxIteraciones?: number; maxTokensSesion?: number } = {}) {
   const { llm, recibidos } = guionizado(respuestas);
   const agente = new Agente({ sistema: "test", herramientas, llm, directorio: ".", ...opciones });
-  const sesion: Sesion = { id: "s1", mensajes: [], esperandoConfirmacion: false, tokensUsados: 0 };
+  const sesion: Sesion = { id: "s1", mensajes: [], confirmacionesPendientes: [], tokensUsados: 0 };
   const eventos: Evento[] = [];
   return { agente, sesion, eventos, emitir: (e: Evento) => eventos.push(e), recibidos };
 }
@@ -57,6 +57,7 @@ describe("contrato de herramientas", () => {
     expect(herramientas.map((h) => [h.nombre, h.confirmable])).toEqual([
       ["ejemplo_aprobar", true],
       ["ejemplo_consultar", false],
+      ["ejemplo_revisar", false],
     ]);
   });
 });
@@ -117,7 +118,7 @@ describe("CA3: confirmación humana", () => {
     await t.agente.turno(t.sesion, "aprueba R-002", t.emitir);
 
     expect(t.eventos.at(-1)).toMatchObject({ tipo: "fin_turno", necesitaConfirmacion: true });
-    expect(t.sesion.esperandoConfirmacion).toBe(true);
+    expect(t.sesion.confirmacionesPendientes).toEqual(["ejemplo_aprobar"]);
   });
 
   test("tras la confirmación del usuario, `confirmado: true` se ejecuta", async () => {
@@ -131,7 +132,7 @@ describe("CA3: confirmación humana", () => {
     await t.agente.turno(t.sesion, "Sí, confirmo", t.emitir);
 
     expect(ultimoResultado(t.recibidos)).toMatchObject({ ok: true, data: { estado: "aprobado" } });
-    expect(t.sesion.esperandoConfirmacion).toBe(false);
+    expect(t.sesion.confirmacionesPendientes).toEqual([]);
   });
 
   test("si en el mismo turno se confirma y se ejecuta bien, el turno ya no queda pendiente", async () => {
@@ -157,6 +158,32 @@ describe("CA3: confirmación humana", () => {
     expect(r.error).toContain("confirmado: true");
     const consulta = await ejemplo.consultar.execute({ codigo: "R-002" }, { directory: ".", sessionId: "x" });
     expect(JSON.parse(consulta).data.estado).toBe("pendiente");
+  });
+
+  test("un 'sí' a otra pregunta no autoriza una acción distinta (RN4)", async () => {
+    const t = preparar([
+      llama("t1", "ejemplo_revisar", { codigo: "R-002" }),
+      responde("¿Confirmas la revisión?"),
+      llama("t2", "ejemplo_aprobar", { codigo: "R-002", confirmado: true }),
+      responde("Necesito tu confirmación para aprobar"),
+    ]);
+    await t.agente.turno(t.sesion, "revisa R-002", t.emitir);
+    await t.agente.turno(t.sesion, "sí", t.emitir);
+    expect(ultimoResultado(t.recibidos).error).toContain("confirmado: true");
+    expect(t.sesion.confirmacionesPendientes).toEqual(["ejemplo_aprobar"]);
+  });
+
+  test("una herramienta puede habilitar otra acción con `accion` (p. ej. validar → crear)", async () => {
+    const t = preparar([
+      llama("t1", "ejemplo_revisar", { codigo: "R-002", habilitar_aprobacion: true }),
+      responde("¿Apruebo?"),
+      llama("t2", "ejemplo_aprobar", { codigo: "R-002", confirmado: true }),
+      responde("Aprobado"),
+    ]);
+    await t.agente.turno(t.sesion, "revisa R-002", t.emitir);
+    expect(t.sesion.confirmacionesPendientes).toEqual(["ejemplo_aprobar"]);
+    await t.agente.turno(t.sesion, "confirmo", t.emitir);
+    expect(ultimoResultado(t.recibidos)).toMatchObject({ ok: true, data: { estado: "aprobado" } });
   });
 
   test("una negativa del usuario no habilita la acción", async () => {

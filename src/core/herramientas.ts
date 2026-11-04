@@ -27,6 +27,11 @@ export interface Herramienta<A extends z.ZodRawShape = z.ZodRawShape> {
 export interface Confirmacion {
   motivo: string;
   detalles?: unknown;
+  /**
+   * Acción que esta confirmación habilita: el nombre de un export del mismo archivo
+   * (p. ej. `oc_validar` habilita `crear`). Si se omite, la propia herramienta.
+   */
+  accion?: string;
 }
 
 export type Resultado<T> =

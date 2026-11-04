@@ -60,7 +60,7 @@ function historial(id: string): Response {
   const mensajes = sesion.mensajes.map((m) => (m.rol === "asistente" ? { ...m, nativo: undefined } : m));
   return Response.json({
     id: sesion.id,
-    esperandoConfirmacion: sesion.esperandoConfirmacion,
+    confirmacionesPendientes: sesion.confirmacionesPendientes,
     tokensUsados: sesion.tokensUsados,
     mensajes,
   });

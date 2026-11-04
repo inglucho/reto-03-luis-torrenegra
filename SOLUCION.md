@@ -35,7 +35,7 @@ Un cambio de reglas de negocio toca `src/oc/reglas.ts` y el conocimiento. Nunca 
 
 ## 3. Ciclo del agente
 
-El ciclo es propio (`src/core/agente.ts`, menos de 200 líneas) y no depende del proveedor:
+El ciclo es propio (`src/core/agente.ts`, unas 200 líneas) y no depende del proveedor:
 
 1. Se agrega el mensaje del usuario al historial de la sesión, que solo crece.
 2. Se llama al modelo a través de `AdaptadorLLM.enviar(mensajes, herramientas)`. El texto se transmite al chat a medida que llega.
@@ -46,8 +46,10 @@ El ciclo es propio (`src/core/agente.ts`, menos de 200 líneas) y no depende del
 
 **Confirmación humana (CA3), en tres capas:**
 1. **La herramienta decide.** `oc_validar` y `oc_crear` devuelven un campo `confirmacion` cuando hay excepciones (RC5, RC6, RC8, RC9). `oc_crear` no crea la OC sin `confirmado: true`.
-2. **El backend garantiza.** Si el turno terminó con una confirmación pendiente, la sesión queda en espera. `confirmado: true` solo se acepta si el siguiente mensaje del usuario es una confirmación explícita ("confirmo", "sí, procede"…) y no contiene una negativa. Si el modelo usa `confirmado: true` por su cuenta, el backend lo bloquea aunque el prompt falle.
+2. **El backend garantiza, por acción.** Si el turno terminó con una confirmación pendiente, la sesión queda en espera. `confirmado: true` solo se acepta si el siguiente mensaje del usuario es una confirmación explícita ("confirmo", "sí, procede"…) y no contiene una negativa. Si el modelo usa `confirmado: true` por su cuenta, el backend lo bloquea aunque el prompt falle.
 3. **El chat lo hace visible.** El evento `fin_turno` trae `necesitaConfirmacion`, y el front resalta el turno con botones de respuesta rápida.
+
+**Confirmación ligada a la acción.** Cada confirmación queda asociada a la acción que la pidió; una validación puede declarar qué acción habilita (oc_validar habilita oc_crear). Así, un "sí" a otra pregunta nunca autoriza una acción distinta. El ajuste surgió de una prueba real en el reto 01 y se aplicó al núcleo de los tres retos.
 
 **Errores (CA5).** Los errores del proveedor se traducen a mensajes claros, por ejemplo "se alcanzó el límite de uso gratuito, espera un minuto". La sesión sigue viva y un caso malo no impide procesar el siguiente.
 
@@ -160,7 +162,7 @@ La decisión de tolerar o rechazar sigue siendo de la dirección, como plantea e
 |---|---|---|---|
 | 1 | **Las herramientas recalculan todo desde los fixtures.** Los argumentos `paquete`, `derivados` y `payload` son opcionales y solo se comparan; `oc_crear` rechaza un payload que difiera del calculado | Pasar el paquete y el payload de herramienta en herramienta a través del modelo, como sugiere la tabla de 6.2 | Es la mitigación del riesgo "el modelo arregla un monto para que cuadre". El modelo no puede alterar lo que se crea en SAP, y además ahorra tokens |
 | 2 | **Confirmación garantizada por el backend** (guardia de `confirmado`), además del prompt | Confiar solo en el prompt | Un prompt se puede saltar. En la primera prueba real, el modelo pidió confirmación por su cuenta sin consultar la herramienta; eso llevó a reforzar el prompt y a que la decisión la tome siempre la herramienta |
-| 3 | **Ciclo del agente propio y adaptador LLM neutral** | Un framework (LangChain, Vercel AI SDK) o el tool runner de un SDK | El PRD evalúa el ciclo, y el propio cabe en menos de 200 líneas explicables una a una. Permite la pausa de confirmación entre turnos y cambiar de proveedor sin tocarlo |
+| 3 | **Ciclo del agente propio y adaptador LLM neutral** | Un framework (LangChain, Vercel AI SDK) o el tool runner de un SDK | El PRD evalúa el ciclo, y el propio cabe en unas 200 líneas explicables una a una. Permite la pausa de confirmación entre turnos y cambiar de proveedor sin tocarlo |
 | 4 | **Gemini en capa gratuita con modelo de respaldo** | Un modelo de pago | Costo cero y sin riesgo de factura. El respaldo compensa la saturación de la capa gratuita |
 | 5 | **Reglas como funciones puras separadas de la E/S** (`src/oc/reglas.ts`) | Validar dentro de cada herramienta | Se prueban sin archivos, `demo.ts` y el chat usan exactamente la misma lógica, y cambiar una regla no toca nada más |
 | 6 | **Front en HTML + TypeScript sin framework, con SSE** | React con WebSockets | Para un chat basta, Bun lo empaqueta sin configuración y SSE es unidireccional, que es lo que se necesita |

@@ -4,8 +4,8 @@ export interface Sesion {
   id: string;
   /** Historial que se envía al modelo. Solo crece: nunca se reescriben mensajes anteriores. */
   mensajes: Mensaje[];
-  /** El último turno terminó con una pregunta de confirmación pendiente. */
-  esperandoConfirmacion: boolean;
+  /** Acciones (nombres de herramienta) que el último turno dejó esperando confirmación. */
+  confirmacionesPendientes: string[];
   tokensUsados: number;
 }
 
@@ -33,7 +33,7 @@ export class AlmacenSesiones {
     this.purgarVencidas();
     let entrada = this.entradas.get(id);
     if (!entrada) {
-      const sesion: Sesion = { id, mensajes: [], esperandoConfirmacion: false, tokensUsados: 0 };
+      const sesion: Sesion = { id, mensajes: [], confirmacionesPendientes: [], tokensUsados: 0 };
       entrada = { sesion, ocupada: false, ultimoUso: Date.now() };
       this.entradas.set(id, entrada);
     }

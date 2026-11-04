@@ -47,13 +47,14 @@ export class Agente {
 
   /** Procesa un mensaje del usuario: llama al modelo y ejecuta herramientas hasta obtener una respuesta. */
   async turno(sesion: Sesion, texto: string, emitir: Emitir): Promise<void> {
-    // CA3: `confirmado: true` solo vale si este mensaje responde a una pregunta de confirmación.
-    const confirmaAhora = sesion.esperandoConfirmacion && esConfirmacion(texto);
-    sesion.esperandoConfirmacion = false;
+    // CA3/RN4: `confirmado: true` solo vale para las acciones que pidieron confirmación en el turno
+    // anterior, y solo si este mensaje las confirma. Un "sí" a otra pregunta no autoriza nada más.
+    const autorizadas: ReadonlySet<string> = new Set(esConfirmacion(texto) ? sesion.confirmacionesPendientes : []);
+    sesion.confirmacionesPendientes = [];
     sesion.mensajes.push({ rol: "usuario", texto });
 
     const uso: UsoTurno = { llamadasModelo: 0, tokensEntrada: 0, tokensSalida: 0, tokensCache: 0, tokensSesion: 0 };
-    // Estado final por herramienta: si pidió confirmación y luego se ejecutó bien en el mismo turno, ya no está pendiente.
+    // Estado final por acción: si pidió confirmación y luego se ejecutó bien en el mismo turno, ya no está pendiente.
     const pendientes = new Map<string, boolean>();
 
     for (let iteracion = 1; ; iteracion++) {
@@ -105,9 +106,9 @@ export class Agente {
 
       const resultados: ResultadoHerramienta[] = [];
       for (const llamada of respuesta.llamadas) {
-        const { resultado, pideConfirmacion } = await this.ejecutarLlamada(sesion, llamada, confirmaAhora, emitir);
+        const { resultado, autoriza } = await this.ejecutarLlamada(sesion, llamada, autorizadas, emitir);
         resultados.push(resultado);
-        if (pideConfirmacion) pendientes.set(llamada.nombre, true);
+        if (autoriza) pendientes.set(autoriza, true);
         else if (!resultado.error) pendientes.set(llamada.nombre, false);
       }
       sesion.mensajes.push({
@@ -117,8 +118,8 @@ export class Agente {
       });
     }
 
-    const necesitaConfirmacion = [...pendientes.values()].some(Boolean);
-    sesion.esperandoConfirmacion = necesitaConfirmacion;
+    sesion.confirmacionesPendientes = [...pendientes].filter(([, pendiente]) => pendiente).map(([accion]) => accion);
+    const necesitaConfirmacion = sesion.confirmacionesPendientes.length > 0;
     uso.tokensSesion = sesion.tokensUsados;
     emitir({ tipo: "fin_turno", necesitaConfirmacion, uso });
   }
@@ -126,27 +127,28 @@ export class Agente {
   private async ejecutarLlamada(
     sesion: Sesion,
     llamada: LlamadaHerramienta,
-    confirmaAhora: boolean,
+    autorizadas: ReadonlySet<string>,
     emitir: Emitir,
-  ): Promise<{ resultado: ResultadoHerramienta; pideConfirmacion: boolean }> {
+  ): Promise<{ resultado: ResultadoHerramienta; autoriza: string | null }> {
     emitir({ tipo: "llamada", id: llamada.id, nombre: llamada.nombre, args: llamada.args });
 
     const h = this.porNombre.get(llamada.nombre);
     let contenido: string;
     if (!h) {
       contenido = JSON.stringify({ ok: false, error: `Herramienta desconocida: ${llamada.nombre}` });
-    } else if (h.confirmable && pideConfirmado(llamada.args) && !confirmaAhora) {
+    } else if (h.confirmable && pideConfirmado(llamada.args) && !autorizadas.has(h.nombre)) {
       contenido = JSON.stringify({
         ok: false,
         error: MENSAJE_SIN_CONFIRMACION,
-        confirmacion: { motivo: "Falta la confirmación explícita del usuario." },
+        confirmacion: { motivo: "Falta la confirmación explícita del usuario para esta acción." },
       });
     } else {
       contenido = await ejecutar(h, llamada.args, { directory: this.config.directorio, sessionId: sesion.id });
     }
 
     const leido = leerResultado(contenido);
-    const pideConfirmacion = Boolean(leido.confirmacion);
+    const autoriza = leido.confirmacion ? accionAutorizada(llamada.nombre, leido.confirmacion.accion) : null;
+    const pideConfirmacion = autoriza !== null;
     const resumen = resumir(leido);
     emitir({
       tipo: "resultado",
@@ -167,9 +169,16 @@ export class Agente {
 
     return {
       resultado: { id: llamada.id, nombre: llamada.nombre, contenido, error: !leido.ok },
-      pideConfirmacion,
+      autoriza,
     };
   }
+}
+
+/** Acción que habilita una confirmación: la indicada (`<prefijo>_<accion>`) o la propia herramienta. */
+function accionAutorizada(nombre: string, accion?: string): string {
+  if (!accion) return nombre;
+  const corte = nombre.indexOf("_");
+  return corte > 0 ? `${nombre.slice(0, corte)}_${accion}` : accion;
 }
 
 function pideConfirmado(args: unknown): boolean {

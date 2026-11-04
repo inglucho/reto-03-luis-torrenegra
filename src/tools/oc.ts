@@ -91,7 +91,8 @@ export const validar = {
         return JSON.stringify({
           ok: true,
           data,
-          confirmacion: { motivo: `Antes de crear la OC hay que confirmar: ${resumenReglas(validacion.confirmaciones)}.` },
+          // La confirmación de la validación habilita `oc_crear` en el siguiente turno.
+          confirmacion: { motivo: `Antes de crear la OC hay que confirmar: ${resumenReglas(validacion.confirmaciones)}.`, accion: "crear" },
         });
       }
       return ok(data);
