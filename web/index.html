@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agente Periferia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="barra">
+        <div class="marca">
+          <div class="logo" aria-hidden="true">P</div>
+          <div class="marca-texto">
+            <span class="reto" id="reto">Periferia IT Group</span>
+            <span class="producto" id="titulo">Agente</span>
+          </div>
+        </div>
+        <div class="barra-acciones">
+          <span class="estado" id="estado" title="Proveedor de IA">
+            <span class="punto" aria-hidden="true"></span>
+            <span id="estado-texto">Conectando…</span>
+          </span>
+          <button type="button" class="btn btn-secundario" id="abrir-guia" aria-controls="guia">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3.5h8.5a3 3 0 0 1 3 3V17H7a3 3 0 0 1-3-3z" /><path d="M4 14a3 3 0 0 1 3-3h8.5" /></svg>
+            <span>Guía de uso</span>
+          </button>
+          <button type="button" class="btn btn-secundario" id="reset">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg>
+            <span>Nueva conversación</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="hilo" id="log" aria-live="polite">
+        <section class="bienvenida" id="empty">
+          <div class="bienvenida-cabecera">
+            <h1>¿Qué quieres hacer hoy?</h1>
+            <p class="bienvenida-texto" id="descripcion"></p>
+          </div>
+
+          <ol class="como-funciona" aria-label="Cómo funciona">
+            <li>
+              <span class="num">1</span>
+              <div><strong>Escribe o elige un ejemplo</strong><span>Pídelo en lenguaje natural y menciona el caso.</span></div>
+            </li>
+            <li>
+              <span class="num">2</span>
+              <div><strong>El agente consulta las fuentes</strong><span>Verás cada paso que da y su resultado.</span></div>
+            </li>
+            <li>
+              <span class="num">3</span>
+              <div><strong>Revisa la respuesta</strong><span>Resume lo encontrado, con tablas y lo que falta.</span></div>
+            </li>
+            <li>
+              <span class="num">4</span>
+              <div><strong>Tú decides lo importante</strong><span>Las acciones con excepciones esperan tu confirmación.</span></div>
+            </li>
+          </ol>
+
+          <h2 class="seccion-titulo">Prueba con un ejemplo</h2>
+          <div class="sugerencias" id="sugerencias"></div>
+
+          <div class="casos-bloque">
+            <div class="casos-cabecera">
+              <h2 class="seccion-titulo">Datos de prueba disponibles</h2>
+              <span class="pista">Haz clic en uno para escribir la instrucción y editarla antes de enviar.</span>
+            </div>
+            <div class="casos" id="casos"></div>
+          </div>
+
+          <button type="button" class="enlace" id="ver-guia">Ver la guía completa: qué esperar, confirmaciones y resultados →</button>
+        </section>
+      </main>
+
+      <footer class="pie">
+        <form class="composer" id="composer">
+          <textarea id="input" rows="1" placeholder="Escribe una instrucción para el agente…" autocomplete="off" aria-label="Mensaje"></textarea>
+          <button type="submit" class="btn-enviar" id="send" aria-label="Enviar">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V4M5 9l5-5 5 5" /></svg>
+          </button>
+        </form>
+        <div class="ayuda">
+          <span>Enter para enviar · Shift + Enter para una nueva línea · <button type="button" class="enlace-pequeno" id="ayuda-guia">¿Qué puedo pedir?</button></span>
+          <span id="uso"></span>
+        </div>
+      </footer>
+    </div>
+
+    <div class="velo" id="velo" hidden></div>
+    <aside class="guia" id="guia" aria-label="Guía de uso" aria-hidden="true" tabindex="-1">
+      <div class="guia-cabecera">
+        <div>
+          <span class="reto">Guía de uso</span>
+          <h2 id="guia-titulo">Cómo usar el agente</h2>
+        </div>
+        <button type="button" class="btn-icono" id="cerrar-guia" aria-label="Cerrar la guía">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" /></svg>
+        </button>
+      </div>
+      <div class="guia-cuerpo" id="guia-cuerpo"></div>
+    </aside>
+
+    <script type="module" src="./app.ts"></script>
+  </body>
+</html>
