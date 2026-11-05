@@ -1,6 +1,6 @@
 # Reto 03 — Órdenes de Compra SAP (prueba técnica Periferia)
 
-Agente conversacional en TypeScript + Bun. El PRD está en `docs/PRD.md`; su sección 6 fija la arquitectura (nombres de archivo, contrato de herramientas, API) y la 7 las reglas RC1–RC10. El PRD manda sobre cualquier suposición.
+Agente conversacional en TypeScript + Bun. El PRD está en `docs/PRD.md` (copia local, no versionada: es material de la prueba); su sección 6 fija la arquitectura (nombres de archivo, contrato de herramientas, API) y la 7 las reglas RC1–RC10. El PRD manda sobre cualquier suposición.
 
 ## Comandos
 

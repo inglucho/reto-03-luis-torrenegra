@@ -6,3 +6,6 @@ dist/
 .DS_Store
 out/
 .tmp-tests/
+
+# Material de la prueba: se conserva localmente, no se publica.
+docs/PRD.md
