@@ -1,3 +1,5 @@
+import { rm } from "node:fs/promises";
+import { join } from "node:path";
 import { z } from "zod";
 import index from "../web/index.html";
 import { config } from "./config";
@@ -69,6 +71,19 @@ async function chat(req: Request): Promise<Response> {
   });
 }
 
+/**
+ * POST /api/datos/restablecer: borra solo `out/` (lo generado) para que los casos de prueba
+ * vuelvan a su estado inicial. Los fixtures no se tocan. Útil en la demo pública, porque
+ * crear una OC o procesar un mensaje "gasta" el caso (idempotencia y duplicados).
+ */
+async function restablecerDatos(req: Request): Promise<Response> {
+  if (!limite.permitir(ipDelCliente(req))) {
+    return Response.json({ error: "Demasiadas solicitudes seguidas. Espera unos minutos." }, { status: 429 });
+  }
+  await rm(join(config.directorio, "out"), { recursive: true, force: true });
+  return Response.json({ ok: true });
+}
+
 /** GET /api/sessions/:id: historial de la sesión, sin la respuesta cruda del proveedor. */
 function historial(id: string): Response {
   const sesion = sesiones.obtener(id);
@@ -94,6 +109,7 @@ const servidor = Bun.serve({
     "/api/herramientas": () =>
       Response.json(agente.herramientas.map((h) => ({ nombre: h.nombre, descripcion: h.herramienta.description }))),
     "/api/chat": { POST: chat },
+    "/api/datos/restablecer": { POST: restablecerDatos },
     "/api/sessions/:id": {
       GET: (req) => historial(req.params.id),
       DELETE: (req) => {

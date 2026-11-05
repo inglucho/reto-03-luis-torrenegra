@@ -428,6 +428,11 @@ function pintarGuia(i: Info) {
     ),
     seccion("Dónde quedan los resultados", el("p", undefined, "Los archivos se generan en la carpeta out/ del servidor:"), rutas),
     seccion(
+      "Empezar de cero",
+      el("p", undefined, "Al procesar un caso, sus resultados quedan guardados: si lo procesas otra vez, el agente lo reconoce y no lo duplica. Para volver a ver los casos como nuevos, restablece los datos de prueba."),
+      botonRestablecer(),
+    ),
+    seccion(
       "Límites",
       lista([
         `Fecha de referencia: ${i.fechaReferencia}. Se usa para vigencias, vencimientos y fechas de registro.`,
@@ -437,6 +442,23 @@ function pintarGuia(i: Info) {
       ]),
     ),
   );
+}
+
+function botonRestablecer(): HTMLElement {
+  const contenedor = el("div", "restablecer");
+  const boton = el("button", "btn btn-secundario", "Restablecer datos de prueba");
+  boton.type = "button";
+  const estado = el("span", "restablecer-estado");
+  boton.onclick = async () => {
+    if (!confirm("Se borrarán los resultados generados (órdenes, registros, archivos) y los casos volverán a su estado inicial. ¿Continuar?")) return;
+    boton.disabled = true;
+    estado.textContent = "Restableciendo…";
+    const r = await fetch("/api/datos/restablecer", { method: "POST" }).catch(() => null);
+    boton.disabled = false;
+    estado.textContent = r?.ok ? "Listo: los casos están como nuevos." : "No se pudo restablecer. Intenta de nuevo en unos minutos.";
+  };
+  contenedor.append(boton, estado);
+  return contenedor;
 }
 
 function abrirGuia() {

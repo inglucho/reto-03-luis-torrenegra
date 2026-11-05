@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="1280" height="820" role="img" aria-label="Arquitectura · Reto 03 · Órdenes de Compra SAP">
+<defs><marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#98a2b3"/></marker><marker id="punta-inicio" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#98a2b3"/></marker></defs>
+<rect width="1280" height="820" fill="#ffffff"/>
+<text x="30" y="44" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#101828" text-anchor="start">Arquitectura · Reto 03 · Órdenes de Compra SAP</text>
+<text x="30" y="68" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#475467" text-anchor="start">Agente conversacional que valida solicitudes de compra con los controles RC1–RC10 y crea la OC en un SAP simulado.</text>
+<circle cx="150" cy="118" r="13" fill="none" stroke="#475467" stroke-width="1.8"/>
+<path d="M126,156 a24,22 0 0 1 48,0" fill="none" stroke="#475467" stroke-width="1.8"/>
+<text x="150" y="178" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#101828" text-anchor="middle">Analista administrativa</text>
+<path d="M150,186 V214" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<circle cx="172" cy="200" r="11" fill="#16794c"/>
+<text x="172" y="204" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<rect x="30" y="216" width="240" height="200" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="48" y="242" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Chat web</text>
+<text x="48" y="260" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">web/ · HTML + TypeScript</text>
+<circle cx="52" cy="283" r="2.2" fill="#16794c"/>
+<text x="62" y="287" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Guía de uso y ejemplos</text>
+<circle cx="52" cy="302" r="2.2" fill="#16794c"/>
+<text x="62" y="306" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Pasos del agente en vivo</text>
+<circle cx="52" cy="321" r="2.2" fill="#16794c"/>
+<text x="62" y="325" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Resumen legible por paso</text>
+<circle cx="52" cy="340" r="2.2" fill="#16794c"/>
+<text x="62" y="344" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Confirmación con botones</text>
+<circle cx="52" cy="359" r="2.2" fill="#16794c"/>
+<text x="62" y="363" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Markdown seguro (sin HTML)</text>
+<rect x="30" y="452" width="240" height="116" rx="12" fill="#f9fafb" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="48" y="478" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">demo.ts</text>
+<text x="48" y="496" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">Verificación sin modelo</text>
+<circle cx="52" cy="519" r="2.2" fill="#16794c"/>
+<text x="62" y="523" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Procesa los 6 casos sin clave</text>
+<circle cx="52" cy="538" r="2.2" fill="#16794c"/>
+<text x="62" y="542" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">y compara con lo esperado</text>
+<rect x="300" y="94" width="620" height="512" rx="16" fill="#fcfcfd" stroke="#d0d5dd" stroke-width="1.2" stroke-dasharray="7 5"/>
+<text x="320" y="116" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#98a2b3" text-anchor="start">BACKEND · BUN + TYPESCRIPT</text>
+<rect x="320" y="130" width="280" height="110" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="338" y="156" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">API HTTP</text>
+<text x="338" y="174" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">src/server.ts</text>
+<circle cx="342" cy="197" r="2.2" fill="#16794c"/>
+<text x="352" y="201" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">POST /api/chat · eventos SSE</text>
+<circle cx="342" cy="216" r="2.2" fill="#16794c"/>
+<text x="352" y="220" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">GET /api/sessions/:id · /api/health</text>
+<circle cx="342" cy="235" r="2.2" fill="#16794c"/>
+<text x="352" y="239" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Límite por IP y tope diario</text>
+<rect x="620" y="130" width="280" height="50" rx="12" fill="#f9fafb" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="638" y="156" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Comportamiento</text>
+<text x="882" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="end">agent/prompt.md</text>
+<rect x="620" y="190" width="280" height="50" rx="12" fill="#f9fafb" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="638" y="216" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Conocimiento</text>
+<text x="882" y="216" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="end">src/knowledge/</text>
+<rect x="320" y="262" width="580" height="124" rx="12" fill="#e8f5ee" stroke="#16794c" stroke-width="1.6"/>
+<text x="338" y="288" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Ciclo del agente</text>
+<text x="338" y="306" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">src/core/agente.ts · independiente del proveedor y del dominio</text>
+<circle cx="342" cy="328" r="2.2" fill="#16794c"/>
+<text x="352" y="332" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Tope de 25 rondas por turno (CA1)</text>
+<circle cx="622" cy="328" r="2.2" fill="#16794c"/>
+<text x="632" y="332" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Confirmación por acción y caso (CA3)</text>
+<circle cx="342" cy="347" r="2.2" fill="#16794c"/>
+<text x="352" y="351" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Argumentos validados con zod</text>
+<circle cx="622" cy="347" r="2.2" fill="#16794c"/>
+<text x="632" y="351" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Bitácora de cada llamada (CA4)</text>
+<circle cx="342" cy="366" r="2.2" fill="#16794c"/>
+<text x="352" y="370" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Sesiones en memoria</text>
+<circle cx="622" cy="366" r="2.2" fill="#16794c"/>
+<text x="632" y="370" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Errores claros, sesión viva (CA5)</text>
+<rect x="320" y="410" width="280" height="180" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="338" y="436" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Herramientas</text>
+<text x="338" y="454" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">src/tools/oc.ts · contrato zod</text>
+<text x="338" y="481" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_listar_solicitudes</text>
+<text x="338" y="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_leer_paquete</text>
+<text x="338" y="519" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_validar</text>
+<text x="338" y="538" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_construir_payload</text>
+<text x="338" y="557" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_generar_evidencia</text>
+<text x="338" y="576" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">oc_crear</text>
+<rect x="620" y="410" width="280" height="180" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="638" y="436" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Lógica de negocio</text>
+<text x="638" y="454" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">src/oc/ · src/sap/</text>
+<circle cx="642" cy="477" r="2.2" fill="#16794c"/>
+<text x="652" y="481" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Reglas RC1–RC10 (puras)</text>
+<circle cx="642" cy="496" r="2.2" fill="#16794c"/>
+<text x="652" y="500" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Payload SAP y trazabilidad</text>
+<circle cx="642" cy="515" r="2.2" fill="#16794c"/>
+<text x="652" y="519" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Evidencia TXT y PDF (sha256)</text>
+<circle cx="642" cy="534" r="2.2" fill="#16794c"/>
+<text x="652" y="538" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Control de intentos</text>
+<circle cx="642" cy="553" r="2.2" fill="#16794c"/>
+<text x="652" y="557" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Adaptador SAP simulado</text>
+<rect x="950" y="94" width="300" height="146" rx="16" fill="#f0f5ff" stroke="#b2ccff" stroke-width="1.2"/>
+<text x="970" y="120" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1d4ed8" text-anchor="start">PROVEEDOR DE IA · NUBE</text>
+<text x="970" y="146" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Google Gemini</text>
+<text x="970" y="166" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">gemini-3.5-flash (capa gratuita)</text>
+<text x="970" y="186" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Respaldo: 3.5-flash-lite → 3.1-flash-lite</text>
+<text x="970" y="214" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Alternativo: Anthropic Claude</text>
+<rect x="950" y="262" width="300" height="124" rx="12" fill="#ffffff" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="968" y="288" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Adaptador LLM</text>
+<text x="968" y="306" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#98a2b3" text-anchor="start">src/llm/adapter.ts</text>
+<circle cx="972" cy="329" r="2.2" fill="#16794c"/>
+<text x="982" y="333" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">enviar(mensajes, herramientas)</text>
+<circle cx="972" cy="348" r="2.2" fill="#16794c"/>
+<text x="982" y="352" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Gemini y Anthropic intercambiables</text>
+<circle cx="972" cy="367" r="2.2" fill="#16794c"/>
+<text x="982" y="371" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Clave solo en el entorno</text>
+<text x="320" y="632" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#98a2b3" text-anchor="start">DATOS</text>
+<path d="M320,654 A140.0,10 0 0 1 600,654 V784 A140.0,10 0 0 1 320,784 Z" fill="#fffaeb" stroke="#fec84b" stroke-width="1.2"/>
+<ellipse cx="460.0" cy="654" rx="140.0" ry="10" fill="#fff4d6" stroke="#fec84b" stroke-width="1.2"/>
+<text x="338" y="684" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">fixtures/ · solo lectura</text>
+<text x="338" y="709" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">solicitudes/sol-001 … sol-006</text>
+<text x="338" y="728" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">maestros/proveedores.json</text>
+<text x="338" y="747" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">maestros/centros-costo.json</text>
+<text x="338" y="766" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">IVA y condiciones de pago</text>
+<path d="M620,654 A140.0,10 0 0 1 900,654 V784 A140.0,10 0 0 1 620,784 Z" fill="#fffaeb" stroke="#fec84b" stroke-width="1.2"/>
+<ellipse cx="760.0" cy="654" rx="140.0" ry="10" fill="#fff4d6" stroke="#fec84b" stroke-width="1.2"/>
+<text x="638" y="684" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">out/ · resultados</text>
+<text x="638" y="709" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">sap/ordenes.jsonl</text>
+<text x="638" y="728" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">control.csv · log.jsonl</text>
+<text x="638" y="747" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">&lt;caso&gt;/trazabilidad.json</text>
+<text x="638" y="766" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11.5" font-weight="400" fill="#475467" text-anchor="start">&lt;caso&gt;/aprobacion.txt y .pdf</text>
+<rect x="950" y="410" width="300" height="384" rx="12" fill="#f9fafb" stroke="#d0d5dd" stroke-width="1.2"/>
+<text x="968" y="436" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#101828" text-anchor="start">Flujo de un mensaje</text>
+<circle cx="978" cy="466" r="11" fill="#16794c"/>
+<text x="978" y="470" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="998" y="470" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">La analista escribe en el chat</text>
+<text x="998" y="487" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">o elige un ejemplo de la guía.</text>
+<circle cx="978" cy="518" r="11" fill="#16794c"/>
+<text x="978" y="522" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="998" y="522" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">El servidor abre un turno</text>
+<text x="998" y="539" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">y transmite cada evento en vivo.</text>
+<circle cx="978" cy="570" r="11" fill="#16794c"/>
+<text x="978" y="574" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="998" y="574" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">El modelo decide qué herramienta</text>
+<text x="998" y="591" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">usar, a través del adaptador.</text>
+<circle cx="978" cy="622" r="11" fill="#16794c"/>
+<text x="978" y="626" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<text x="998" y="626" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">La herramienta valida y aplica</text>
+<text x="998" y="643" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">las reglas sobre los datos.</text>
+<circle cx="978" cy="674" r="11" fill="#16794c"/>
+<text x="978" y="678" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+<text x="998" y="678" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">Los resultados quedan en out/</text>
+<text x="998" y="695" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">y en la bitácora.</text>
+<circle cx="978" cy="726" r="11" fill="#16794c"/>
+<text x="978" y="730" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
+<text x="998" y="730" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#101828" text-anchor="start">Lo que requiere decisión se detiene</text>
+<text x="998" y="747" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">hasta que la analista confirma.</text>
+<path d="M270,262 H290 V184 H318" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-start="url(#punta-inicio)" marker-end="url(#punta)"/>
+<text x="0" y="0" transform="translate(304,250) rotate(-90)" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="middle">HTTP + SSE</text>
+<circle cx="290" cy="214" r="11" fill="#16794c"/>
+<text x="290" y="218" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<path d="M460,240 V260" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<path d="M760,240 V260" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<text x="768" y="254" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="start">system prompt</text>
+<path d="M900,324 H948" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-start="url(#punta-inicio)" marker-end="url(#punta)"/>
+<circle cx="924" cy="306" r="11" fill="#16794c"/>
+<text x="924" y="310" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<path d="M1100,262 V242" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-start="url(#punta-inicio)" marker-end="url(#punta)"/>
+<text x="1108" y="256" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="start">HTTPS</text>
+<path d="M460,386 V408" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<text x="468" y="402" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="start">llamadas validadas</text>
+<circle cx="440" cy="398" r="11" fill="#16794c"/>
+<text x="440" y="402" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<path d="M600,500 H618" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<path d="M700,590 V642" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<text x="708" y="622" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="start">escribe</text>
+<circle cx="686" cy="618" r="11" fill="#16794c"/>
+<text x="686" y="622" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+<path d="M640,590 L580,644" fill="none" stroke="#98a2b3" stroke-width="1.6" marker-end="url(#punta)"/>
+<text x="598" y="628" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="end">lee</text>
+<path d="M270,510 H294 V500 H318" fill="none" stroke="#98a2b3" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#punta)"/>
+<text x="276" y="530" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#98a2b3" text-anchor="start">sin modelo</text>
+<text x="30" y="632" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#98a2b3" text-anchor="start">LEYENDA</text>
+<line x1="30" y1="656" x2="70" y2="656" stroke="#98a2b3" stroke-width="1.6"/>
+<text x="80" y="660" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Flujo en ejecución</text>
+<line x1="30" y1="682" x2="70" y2="682" stroke="#98a2b3" stroke-width="1.6" stroke-dasharray="6 5"/>
+<text x="80" y="686" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Verificación sin modelo</text>
+<rect x="30" y="698" width="40" height="18" rx="5" fill="#e8f5ee" stroke="#16794c"/>
+<text x="80" y="712" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Garantías en código</text>
+<rect x="30" y="726" width="40" height="18" rx="5" fill="#fffaeb" stroke="#fec84b"/>
+<text x="80" y="740" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Datos (archivos)</text>
+<rect x="30" y="754" width="40" height="18" rx="5" fill="#f0f5ff" stroke="#b2ccff"/>
+<text x="80" y="768" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#475467" text-anchor="start">Servicio externo</text>
+</svg>

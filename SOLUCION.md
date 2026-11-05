@@ -6,24 +6,9 @@ La analista administrativa digita a mano en SAP cada orden de compra y valida de
 
 ## 2. Arquitectura
 
-```
-┌──────────── web/ (chat) ─────────────┐   POST /api/chat    ┌──────────── src/server.ts ────────────┐
-│ historial · tarjetas de herramientas │ ──────────────────▶ │ sesiones en memoria · SSE             │
-│ turno resaltado si pide confirmación │ ◀── SSE: texto,     │            │                          │
-│ botones Confirmo / No, cancela       │   llamada, resultado│  src/core/agente.ts (ciclo del agente)│
-└──────────────────────────────────────┘   fin_turno         │   │ tope de iteraciones y de tokens   │
-                                                             │   │ guardia de confirmación (CA3)     │
-                                                             │   │ bitácora → out/log.jsonl (CA4)    │
-                                                             └───┼───────────────┬───────────────────┘
-                                         src/llm/adapter.ts ◀────┘               │
-                                         gemini.ts · anthropic.ts                ▼
-                                                             src/tools/oc.ts (oc_*)  ← contrato del PRD
-                                                                    │
-                                     src/oc/  fuentes · reglas RC1–RC10 · payload · evidencia · control
-                                                                    │
-                          fixtures/reto-03 (lectura)        src/sap/adapter.ts ─▶ mock.ts ─▶ out/sap/ordenes.jsonl
-                                                            out/control.csv · out/<caso>/{trazabilidad.json, aprobacion.txt/.pdf}
-```
+![Arquitectura del agente](docs/arquitectura.svg)
+
+*El diagrama muestra las capas (chat, API, ciclo del agente, herramientas, lógica y datos), el proveedor de IA, la verificación sin modelo (`demo.ts`) y el flujo numerado de un mensaje.*
 
 | Capa | Dónde | Qué contiene |
 |---|---|---|
