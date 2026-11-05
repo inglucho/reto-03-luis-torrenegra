@@ -2,7 +2,7 @@
 
 Agente que lee el paquete de cada solicitud de compra (solicitud, cotización, aprobación del líder y, si llega, factura), lo valida contra los maestros con los controles RC1–RC10, arma la orden de compra (OC) tal como quedaría en SAP, genera la evidencia de aprobación y la crea en un SAP simulado. Las excepciones se devuelven a la analista con una recomendación y solo avanzan con su confirmación explícita.
 
-- **Link de prueba:** _pendiente de despliegue_
+- **Link de prueba:** https://reto-03-luis-torrenegra.onrender.com (Render, plan gratuito: la primera visita puede tardar ~50 s en despertar)
 - **Planteamiento de la solución:** [`SOLUCION.md`](SOLUCION.md)
 - **PRD del reto:** entregado por Periferia IT Group; no se publica en este repositorio
 
