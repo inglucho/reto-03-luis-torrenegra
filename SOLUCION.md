@@ -206,17 +206,17 @@ Usé **Claude Code** (modelo Claude Opus 5.5) como asistente de desarrollo duran
 
 | Tarea | Qué hizo la IA | Qué decidí o revisé yo |
 |---|---|---|
-| Análisis | Leyó los tres PRD y los fixtures, comparó la dificultad y armó la tabla de resultados esperados por caso | Elegir el reto y la estrategia de un núcleo común |
-| Arquitectura | Propuso el ciclo del agente, el adaptador neutral y el contrato de herramientas | Ajustarlos a la sección 6 del PRD |
-| Código y tests | Escribió el núcleo, el dominio, el front y los tests | Revisar cada regla contra la sección 7.3 y las pruebas en vivo |
+| Análisis | Leyó los tres PRD y los fixtures, comparó la dificultad y armó la tabla de resultados esperados por caso | Resolver los tres retos en lugar de uno, con un núcleo común |
+| Arquitectura | Propuso el ciclo del agente, el adaptador neutral y el contrato de herramientas, ajustados a la sección 6 del PRD | Aprobar la propuesta tras entenderla |
+| Código y tests | Escribió el núcleo, el dominio, el front y los tests; auditó cada regla contra la sección 7.3 | Probar el chat en vivo y pedir los cambios de interfaz (tema claro, guía de uso) |
 | SDKs | Leyó los tipos de los SDK instalados (`@google/genai`, `@anthropic-ai/sdk`) antes de usarlos, en vez de escribirlos de memoria | — |
 | Documentación | Redactó README, CLAUDE.md y este documento | Validar supuestos y redacción |
 
-**Lo que descarté de lo propuesto:**
-- **BMAD** como metodología: el PRD ya define requisitos y arquitectura, y la ceremonia no aportaba.
-- **La primera versión de la confirmación,** con botones que pausaban la ejecución. No cumplía CA3 ("solo procede si el siguiente mensaje confirma"), así que pasé a una confirmación conversacional garantizada por el backend.
-- **Anthropic como proveedor por defecto:** lo cambié por la capa gratuita de Gemini por costo. El adaptador de Anthropic quedó como alternativa.
-- **`gemini-flash-latest` como modelo:** en las pruebas reales devolvía 503 por saturación. Medí qué modelos respondían y elegí `gemini-3.5-flash` con respaldo.
+**Lo que se descartó o corrigió en el camino:**
+- **BMAD** como metodología (decisión mía): el PRD ya define requisitos y arquitectura, y la ceremonia no aportaba.
+- **La primera versión de la confirmación,** con botones que pausaban la ejecución. No cumplía CA3 ("solo procede si el siguiente mensaje confirma"), así que se pasó a una confirmación conversacional garantizada por el backend.
+- **Anthropic como proveedor por defecto** (decisión mía): lo cambié por la capa gratuita de Gemini por costo. El adaptador de Anthropic quedó como alternativa.
+- **`gemini-flash-latest` como modelo:** en las pruebas reales devolvía 503 por saturación. Se midió qué modelos respondían y se eligió `gemini-3.5-flash` con respaldo.
 - **Que el modelo calcule diferencias:** en una prueba el modelo calculó por su cuenta la diferencia de $1.500.000 de sol-004. Ahora la herramienta la entrega y el modelo solo la cita (CA2).
 
 `CLAUDE.md` deja las convenciones para que cualquier asistente, o persona, que trabaje en el repo las respete.
