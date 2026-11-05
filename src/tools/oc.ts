@@ -6,8 +6,7 @@ import { CasoSchema, cargarMaestros, ErrorFuente, leerAprobacion, leerPaquete, l
 import { construirPayload, guardarTrazabilidad } from "../oc/payload";
 import { validar as aplicarControles } from "../oc/reglas";
 import { type OrdenCompra, OrdenCompraSchema, PaqueteSchema } from "../oc/tipos";
-import type { SapAdapter } from "../sap/adapter";
-import { SapMock } from "../sap/mock";
+import { sap } from "../sap";
 
 /**
  * Herramientas del reto 03. El modelo las ve como `oc_<export>`.
@@ -16,18 +15,12 @@ import { SapMock } from "../sap/mock";
  * o un payload, solo se usa para detectar diferencias, nunca como fuente.
  */
 
-/** Adaptador SAP en uso. Se reemplaza en tests o por la implementación real. */
-let sap: (dir: string) => SapAdapter = (dir) => new SapMock(dir);
-export function usarSap(fabrica: (dir: string) => SapAdapter): void {
-  sap = fabrica;
-}
-
 /** Convierte errores esperados en `{ ok: false }` legibles; el contrato prohíbe lanzar. */
 async function protegido(cuerpo: () => Promise<string>): Promise<string> {
   try {
     return await cuerpo();
   } catch (err) {
-    if (err instanceof ErrorFuente) return fallo(`${err.message} Pide al solicitante que reenvíe el paquete completo.`);
+    if (err instanceof ErrorFuente) return fallo(err.message);
     return fallo(`Error inesperado: ${err instanceof Error ? err.message : String(err)}`);
   }
 }
@@ -64,7 +57,10 @@ export const listar_solicitudes = {
   description: "Lista los casos de solicitud de compra disponibles para procesar.",
   args: {},
   async execute(_args: Record<string, never>, ctx: Contexto): Promise<string> {
-    return protegido(async () => ok({ casos: await listarCasos(ctx.directory) }));
+    return protegido(async () => {
+      const casos = await listarCasos(ctx.directory);
+      return ok({ casos }, `${casos.length} solicitudes disponibles: ${casos.join(", ")}`);
+    });
   },
 };
 
@@ -74,7 +70,9 @@ export const leer_paquete = {
   async execute(args: { caso: string }, ctx: Contexto): Promise<string> {
     return protegido(async () => {
       const { paquete, faltantes } = await leerPaquete(ctx.directory, args.caso);
-      return ok({ ...paquete, faltantes });
+      const s = paquete.solicitud;
+      const faltan = faltantes.length > 0 ? ` · faltan: ${faltantes.join(", ")}` : "";
+      return ok({ ...paquete, faltantes }, `${s.solicitud_id}: ${s.proveedor_nombre} · ${pesos(s.valor_total, s.moneda)}${paquete.factura ? " · incluye factura" : ""}${faltan}`);
     });
   },
 };
@@ -91,11 +89,15 @@ export const validar = {
         return JSON.stringify({
           ok: true,
           data,
+          resumen: `Apta con ${validacion.confirmaciones.length} confirmación(es) pendiente(s): ${resumenReglas(validacion.confirmaciones)}`,
           // La confirmación de la validación habilita `oc_crear` en el siguiente turno.
           confirmacion: { motivo: `Antes de crear la OC hay que confirmar: ${resumenReglas(validacion.confirmaciones)}.`, accion: "crear" },
         });
       }
-      return ok(data);
+      const resumen = validacion.apta
+        ? "Apta: cumple los controles RC1–RC10, sin excepciones"
+        : `Bloqueada: ${validacion.bloqueos.map((b) => `${b.regla} — ${b.detalle}`).join(" | ")}`;
+      return ok(data, resumen);
     });
   },
 };
@@ -125,7 +127,12 @@ export const construir_payload = {
         ...avisoDiferencias(args.paquete, paquete),
         ...diferencias(args.derivados, validacion.derivados, "derivados").map((c) => `Se ignoró ${c}: se usó el valor del maestro.`),
       ];
-      return ok({ orden, ruta_trazabilidad, confirmaciones_pendientes: validacion.confirmaciones, advertencias });
+      const posicion = orden.posiciones[0];
+      const total = posicion ? posicion.cantidad * posicion.precio_unitario : 0;
+      return ok(
+        { orden, ruta_trazabilidad, confirmaciones_pendientes: validacion.confirmaciones, advertencias },
+        `OC para ${orden.proveedor.nombre} · ${orden.posiciones.length} posición · ${pesos(total, orden.moneda)} · IVA ${posicion?.indicador_iva ?? "?"} · pago ${orden.condiciones_pago}`,
+      );
     });
   },
 };
@@ -137,7 +144,8 @@ export const generar_evidencia = {
     return protegido(async () => {
       const aprobacion = await leerAprobacion(ctx.directory, args.caso);
       if (!aprobacion) return fallo("El caso no tiene correo de aprobación; no hay evidencia que generar.");
-      return ok(await generarEvidencia(ctx.directory, args.caso, aprobacion));
+      const evidencia = await generarEvidencia(ctx.directory, args.caso, aprobacion);
+      return ok(evidencia, `Evidencia generada: ${evidencia.ruta} y ${evidencia.ruta_pdf}`);
     });
   },
 };
@@ -172,7 +180,7 @@ async function crearOrden(args: { caso: string; payload?: OrdenCompra; confirmad
   const existente = await adaptador.buscarOrdenPorReferencia(s.solicitud_id);
   if (existente) {
     await registrarControl(ctx.directory, { ...base, resultado: "existente", numero_oc: existente.numero_oc });
-    return ok({ numero_oc: existente.numero_oc, fecha: null, idempotente: true });
+    return ok({ numero_oc: existente.numero_oc, fecha: existente.fecha ?? null, idempotente: true }, `La OC ${existente.numero_oc} ya existía para ${s.solicitud_id}: no se creó otra`);
   }
 
   if (!validacion.apta) {
@@ -185,12 +193,16 @@ async function crearOrden(args: { caso: string; payload?: OrdenCompra; confirmad
     return JSON.stringify({
       ok: false,
       error: "La OC no se creó: requiere confirmación del usuario.",
+      resumen: `No se creó: falta confirmar ${resumenReglas(validacion.confirmaciones)}`,
       confirmacion: { motivo: resumenReglas(validacion.confirmaciones), detalles: validacion.confirmaciones },
     });
   }
 
   const aprobacion = await leerAprobacion(ctx.directory, args.caso);
-  if (!aprobacion) return fallo("Falta el correo de aprobación.");
+  if (!aprobacion) {
+    await registrarControl(ctx.directory, { ...base, resultado: "error", numero_oc: null });
+    return fallo("Falta el correo de aprobación.");
+  }
   const evidencia = await generarEvidencia(ctx.directory, args.caso, aprobacion);
   const confirmadoPor = validacion.confirmaciones.length > 0 ? `analista vía chat (sesión ${ctx.sessionId})` : null;
   const { orden, trazabilidad } = construirPayload({ paquete, validacion, evidenciaSha256: evidencia.sha256, confirmadoPor });
@@ -198,6 +210,7 @@ async function crearOrden(args: { caso: string; payload?: OrdenCompra; confirmad
   if (args.payload) {
     const distintos = diferencias(sinConfirmador(args.payload), sinConfirmador(orden));
     if (distintos.length > 0) {
+      await registrarControl(ctx.directory, { ...base, resultado: "error", numero_oc: null });
       return fallo(`El payload recibido difiere del calculado desde la fuente en: ${distintos.join(", ")}. No se creó la OC.`);
     }
   }
@@ -205,7 +218,14 @@ async function crearOrden(args: { caso: string; payload?: OrdenCompra; confirmad
   await guardarTrazabilidad(ctx.directory, args.caso, trazabilidad);
   const { numero_oc, fecha } = await adaptador.crearOrden(orden);
   await registrarControl(ctx.directory, { ...base, resultado: "creada", numero_oc });
-  return ok({ numero_oc, fecha, idempotente: false, retroactiva: validacion.retroactiva, evidencia: evidencia.ruta });
+  return ok(
+    { numero_oc, fecha, idempotente: false, retroactiva: validacion.retroactiva, evidencia: evidencia.ruta },
+    `OC ${numero_oc} creada en SAP${validacion.retroactiva ? " · marcada como retroactiva" : ""}`,
+  );
+}
+
+function pesos(valor: number, moneda: string): string {
+  return `${moneda === "COP" ? "$" : `${moneda} `}${valor.toLocaleString("es-CO")}`;
 }
 
 function sinConfirmador(o: OrdenCompra): OrdenCompra {

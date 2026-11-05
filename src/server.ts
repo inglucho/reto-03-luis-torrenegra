@@ -4,8 +4,9 @@ import { config } from "./config";
 import { Agente } from "./core/agente";
 import { Bitacora } from "./core/bitacora";
 import type { Evento } from "./core/eventos";
+import { LimitePorClave, PresupuestoDiario } from "./core/presupuesto";
 import { AlmacenSesiones } from "./core/sesiones";
-import { cargarSistema, herramientas } from "./dominio";
+import { cargarSistema, herramientas, opcionesBitacora, presentacion } from "./dominio";
 import { crearAdaptador } from "./llm";
 
 const agente = new Agente({
@@ -13,22 +14,37 @@ const agente = new Agente({
   herramientas,
   llm: crearAdaptador(config),
   directorio: config.directorio,
-  bitacora: new Bitacora(config.directorio),
+  bitacora: new Bitacora(config.directorio, opcionesBitacora),
   maxIteraciones: config.maxIteraciones,
   maxTokensSesion: config.maxTokensSesion,
+  presupuesto: new PresupuestoDiario(config.maxTokensDia),
 });
 const sesiones = new AlmacenSesiones();
+const limite = new LimitePorClave(config.maxMensajesPorIp, config.ventanaMinutos * 60_000);
 
 const CuerpoChat = z.object({
   sessionId: z.string().min(1).max(100),
   message: z.string().trim().min(1).max(10_000),
 });
 
+/** IP del cliente: la del proxy de la plataforma de despliegue si existe; si no, la de la conexión. */
+function ipDelCliente(req: Request): string {
+  const reenviada = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return reenviada || servidor.requestIP(req)?.address || "desconocida";
+}
+
 /** POST /api/chat: ejecuta un turno y transmite sus eventos por SSE. */
 async function chat(req: Request): Promise<Response> {
   const cuerpo = CuerpoChat.safeParse(await req.json().catch(() => null));
   if (!cuerpo.success) return Response.json({ error: "Se espera { sessionId, message }." }, { status: 400 });
   const { sessionId, message } = cuerpo.data;
+
+  if (!limite.permitir(ipDelCliente(req))) {
+    return Response.json(
+      { error: `Demasiados mensajes seguidos. Espera unos minutos (máximo ${config.maxMensajesPorIp} cada ${config.ventanaMinutos} minutos).` },
+      { status: 429 },
+    );
+  }
 
   const sesion = sesiones.reservar(sessionId);
   if (!sesion) return Response.json({ error: "Esta conversación ya está procesando un mensaje." }, { status: 409 });
@@ -73,6 +89,7 @@ const servidor = Bun.serve({
   routes: {
     "/": index,
     "/api/health": () => Response.json({ ok: true, provider: agente.llm.proveedor, model: agente.llm.modelo }),
+    "/api/info": () => Response.json({ ...presentacion, proveedor: agente.llm.proveedor, modelo: agente.llm.modelo }),
     "/api/herramientas": () =>
       Response.json(agente.herramientas.map((h) => ({ nombre: h.nombre, descripcion: h.herramienta.description }))),
     "/api/chat": { POST: chat },

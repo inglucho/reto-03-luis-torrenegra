@@ -33,7 +33,7 @@ Procesa los 6 casos llamando directamente a las herramientas, sin ninguna clave.
 | sol-005 | ⚠️ RC8: retroactiva (factura anterior a la solicitud) |
 | sol-006 | ⚠️ RC6: IVA derivado del proveedor (C1); RC7 deriva Z030 |
 
-Otros comandos: `bun test` (46 tests, sin clave), `bun run typecheck`, `bun run modulo` (regenera `modulo/`).
+Otros comandos: `bun test` (sin clave), `bun run typecheck`, `bun run modulo` (regenera `modulo/`).
 
 ## Variables de entorno
 
@@ -45,6 +45,9 @@ Otros comandos: `bun test` (46 tests, sin clave), `bun run typecheck`, `bun run 
 | `LLM_TIMEOUT_MS` | Tiempo máximo de espera al proveedor | `120000` |
 | `MAX_ITERACIONES` | Rondas herramienta → modelo por turno | `25` |
 | `MAX_TOKENS_SESION` | Tope de tokens por conversación | `500000` |
+| `MAX_TOKENS_DIA` | Tope diario de tokens para todo el servidor (el link es público) | `3000000` |
+| `MAX_MENSAJES_POR_IP` / `VENTANA_MINUTOS` | Mensajes permitidos por IP en cada ventana | `30` cada `10` minutos |
+| `FECHA_REFERENCIA` | Fecha de referencia del negocio. `2026-09-03` reproduce el escenario de la prueba | hoy |
 | `PORT` | Puerto HTTP | `3000` |
 
 ## API
@@ -56,6 +59,9 @@ Otros comandos: `bun test` (46 tests, sin clave), `bun run typecheck`, `bun run 
 | `DELETE` | `/api/sessions/:id` | Descarta la sesión |
 | `GET` | `/api/health` | `{ ok, provider, model }`, sin exponer claves |
 | `GET` | `/api/herramientas` | Herramientas registradas |
+| `GET` | `/api/info` | Título, descripción y sugerencias que muestra el chat |
+
+La referencia de la sección 6.4 del PRD (`{ reply, toolCalls[], needsConfirmation }`) se entrega como stream: el texto llega en eventos `texto`, cada llamada en `llamada` y `resultado`, y `fin_turno` trae `necesitaConfirmacion`. `POST /api/chat` responde 429 si una IP supera su límite de mensajes.
 
 ## Herramientas
 

@@ -31,7 +31,7 @@ export class SapMock implements SapAdapter {
 
   async buscarOrdenPorReferencia(solicitud_id: string) {
     const existente = (await this.leer()).find((o) => o.orden.referencia.solicitud_id === solicitud_id);
-    return existente ? { numero_oc: existente.numero_oc } : null;
+    return existente ? { numero_oc: existente.numero_oc, fecha: existente.fecha } : null;
   }
 
   crearOrden(orden: OrdenCompra): Promise<{ numero_oc: string; fecha: string }> {

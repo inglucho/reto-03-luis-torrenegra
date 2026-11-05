@@ -3,30 +3,68 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Órdenes de Compra SAP</title>
+    <title>Agente Periferia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="app">
-      <header class="topbar">
-        <div>
-          <h1>Reto 03 · Órdenes de Compra SAP</h1>
-          <p class="meta" id="meta">Cargando…</p>
+      <header class="barra">
+        <div class="marca">
+          <div class="logo" aria-hidden="true">P</div>
+          <div class="marca-texto">
+            <span class="reto" id="reto">Periferia IT Group</span>
+            <span class="producto" id="titulo">Agente</span>
+          </div>
         </div>
-        <button type="button" class="ghost" id="reset">Nueva conversación</button>
+        <div class="barra-acciones">
+          <span class="estado" id="estado" title="Proveedor de IA">
+            <span class="punto" aria-hidden="true"></span>
+            <span id="estado-texto">Conectando…</span>
+          </span>
+          <button type="button" class="btn btn-secundario" id="reset">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg>
+            <span>Nueva conversación</span>
+          </button>
+        </div>
       </header>
 
-      <main class="log" id="log" aria-live="polite">
-        <div class="empty" id="empty">
-          <p>Escribe una instrucción para empezar.</p>
-          <p class="hint">Cada llamada a herramienta aparece como tarjeta. Cuando el agente necesita tu confirmación, el turno se resalta.</p>
-        </div>
+      <main class="hilo" id="log" aria-live="polite">
+        <section class="bienvenida" id="empty">
+          <h1>¿Qué quieres hacer hoy?</h1>
+          <p class="bienvenida-texto" id="descripcion"></p>
+          <div class="sugerencias" id="sugerencias"></div>
+          <ul class="principios">
+            <li>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" /><circle cx="10" cy="10" r="2" /></svg>
+              Cada paso del agente queda visible
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 3v5c0 4-3 6.5-6 8-3-1.5-6-4-6-8V5z" /></svg>
+              Nada se ejecuta sin tu confirmación
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12v12H4z" /><path d="M7 8h6M7 11h6M7 14h3" /></svg>
+              Los datos salen de las fuentes, no del modelo
+            </li>
+          </ul>
+        </section>
       </main>
 
-      <form class="composer" id="composer">
-        <textarea id="input" rows="1" placeholder="Escribe un mensaje…" autocomplete="off"></textarea>
-        <button type="submit" id="send">Enviar</button>
-      </form>
+      <footer class="pie">
+        <form class="composer" id="composer">
+          <textarea id="input" rows="1" placeholder="Escribe una instrucción para el agente…" autocomplete="off" aria-label="Mensaje"></textarea>
+          <button type="submit" class="btn-enviar" id="send" aria-label="Enviar">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V4M5 9l5-5 5 5" /></svg>
+          </button>
+        </form>
+        <div class="ayuda">
+          <span>Enter para enviar · Shift + Enter para una nueva línea</span>
+          <span id="uso"></span>
+        </div>
+      </footer>
     </div>
     <script type="module" src="./app.ts"></script>
   </body>

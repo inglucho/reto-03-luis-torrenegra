@@ -63,7 +63,9 @@ async function procesarCaso(caso: string) {
   const val = v.datos as unknown as Validacion;
   console.log(`\n■ ${caso}`);
   console.log(`   apta: ${val.apta} · retroactiva: ${val.retroactiva}`);
+  if (val.bloqueos.length === 0) console.log("   bloqueos: ninguno");
   for (const b of val.bloqueos) console.log(`   ⛔ ${b.regla}: ${b.detalle}\n      → ${b.accion_sugerida}`);
+  if (val.confirmaciones.length === 0) console.log("   confirmaciones: ninguna");
   for (const c of val.confirmaciones) console.log(`   ⚠️  ${c.regla}: ${c.detalle}`);
   for (const [campo, d] of Object.entries(val.derivados)) console.log(`   ↳ derivado ${campo} = ${d?.valor} (${d?.fuente})`);
 
@@ -95,6 +97,15 @@ async function confirmacionExplicita() {
   verificar(r.ok && r.datos.numero_oc === "4500000002", "debe crear la OC 4500000002");
 }
 
+async function retroactivaConfirmada() {
+  console.log("\n■ O4: sol-005 (retroactiva) con confirmado = true");
+  const r = await ejecutar(crear.execute({ caso: "sol-005", confirmado: true }, ctx));
+  const control = await Bun.file(join(config.directorio, "out", "control.csv")).text();
+  const fila = control.split("\n").find((l) => l.startsWith("SOL-2026-005,creada"));
+  console.log(r.ok ? `   ✅ OC ${r.datos.numero_oc} creada · en out/control.csv: ${fila?.split(",").slice(0, 4).join(",")}` : `   ✘ ${r.error}`);
+  verificar(r.ok && r.datos.retroactiva === true && Boolean(fila?.includes(",true,")), "sol-005 debe quedar creada con retroactiva = true en control.csv");
+}
+
 async function evidencia() {
   const r = await ejecutar(generar_evidencia.execute({ caso: "sol-001" }, ctx));
   console.log(`\n■ Evidencia de sol-001: ${r.datos.ruta} y ${r.datos.ruta_pdf} · sha256 ${String(r.datos.sha256).slice(0, 16)}…`);
@@ -110,6 +121,7 @@ const casos = (listado.datos.casos as string[] | undefined) ?? [];
 for (const caso of casos) await procesarCaso(caso);
 await idempotencia();
 await confirmacionExplicita();
+await retroactivaConfirmada();
 await evidencia();
 
 console.log("\nArchivos generados: out/sap/ordenes.jsonl · out/control.csv · out/<caso>/trazabilidad.json · out/<caso>/aprobacion.{txt,pdf}");

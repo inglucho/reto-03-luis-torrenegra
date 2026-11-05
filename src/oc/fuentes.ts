@@ -33,10 +33,10 @@ async function leerJson<S extends z.ZodType>(ruta: string, esquema: S, nombre: s
   try {
     crudo = JSON.parse(await archivo.text());
   } catch {
-    throw new ErrorFuente(`${nombre} no es un JSON válido.`);
+    throw new ErrorFuente(`${nombre} no es un JSON válido. Pide al solicitante que reenvíe el documento.`);
   }
   const r = esquema.safeParse(crudo);
-  if (!r.success) throw new ErrorFuente(`${nombre} tiene datos inválidos: ${z.prettifyError(r.error)}`);
+  if (!r.success) throw new ErrorFuente(`${nombre} tiene datos inválidos (${z.prettifyError(r.error)}). Pide al solicitante que lo corrija.`);
   return r.data;
 }
 
@@ -77,11 +77,11 @@ export interface LecturaPaquete {
 export async function leerPaquete(dir: string, caso: string): Promise<LecturaPaquete> {
   const carpeta = rutaCaso(dir, caso);
   if (!(await Bun.file(join(carpeta, "solicitud.json")).exists()) && !(await Bun.file(join(carpeta, "correo.json")).exists())) {
-    throw new ErrorFuente(`No existe el caso "${caso}".`);
+    throw new ErrorFuente(`No existe el caso "${caso}". Revisa el nombre con oc_listar_solicitudes.`);
   }
   const correo = await leerJson(join(carpeta, "correo.json"), CorreoSchema, "correo.json");
   const solicitud = await leerJson(join(carpeta, "solicitud.json"), SolicitudSchema, "solicitud.json");
-  if (!correo) throw new ErrorFuente("Falta correo.json: no se puede identificar el correo de origen.");
+  if (!correo) throw new ErrorFuente("Falta correo.json: no se puede identificar el correo de origen. Pide al solicitante que reenvíe el paquete completo.");
   if (!solicitud) throw new ErrorFuente("Falta solicitud.json: pide al solicitante el Excel de la solicitud.");
 
   const aprobacion = await leerJson(join(carpeta, "aprobacion.json"), AprobacionArchivoSchema, "aprobacion.json");
@@ -145,7 +145,7 @@ export function parsearCotizacion(texto: string): NonNullable<Paquete["cotizacio
     referencia: campo(texto, /^COTIZACI[ÓO]N\s+(\S+)/im),
     proveedor: campo(texto, /^Proveedor:\s*(.+)$/im) ?? "",
     nit: nit ? normalizarNit(nit) : null,
-    total: totalTxt ? (aNumero(totalTxt) ?? Number.NaN) : Number.NaN,
+    total: totalTxt ? aNumero(totalTxt) : null,
     moneda: totalTxt?.match(/\b(COP|USD)\b/)?.[1] ?? "COP",
     validez_hasta: fecha && dias > 0 ? sumarDias(fecha, dias) : null,
     texto,
@@ -157,6 +157,6 @@ export function parsearFactura(texto: string): NonNullable<Paquete["factura"]> {
   return {
     numero: campo(texto, /No\.\s*(\S+)/i) ?? "sin número",
     fecha: campo(texto, /Fecha de emisi[óo]n:\s*(\d{4}-\d{2}-\d{2})/i) ?? "",
-    total: totalTxt ? (aNumero(totalTxt) ?? Number.NaN) : Number.NaN,
+    total: totalTxt ? aNumero(totalTxt) : null,
   };
 }

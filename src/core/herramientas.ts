@@ -29,16 +29,18 @@ export interface Confirmacion {
   detalles?: unknown;
   /**
    * Acción que esta confirmación habilita: el nombre de un export del mismo archivo
-   * (p. ej. `oc_validar` habilita `crear`). Si se omite, la propia herramienta.
+   * (p. ej. una validación habilita `crear`). Si se omite, la propia herramienta.
    */
   accion?: string;
 }
 
+/** `resumen`: una frase legible para el chat; si falta, el chat muestra un resumen genérico. */
 export type Resultado<T> =
-  | { ok: true; data: T; confirmacion?: Confirmacion }
-  | { ok: false; error: string; confirmacion?: Confirmacion };
+  | { ok: true; data: T; confirmacion?: Confirmacion; resumen?: string }
+  | { ok: false; error: string; confirmacion?: Confirmacion; resumen?: string };
 
-export const ok = <T>(data: T): string => JSON.stringify({ ok: true, data } satisfies Resultado<T>);
+export const ok = <T>(data: T, resumen?: string): string =>
+  JSON.stringify({ ok: true, data, ...(resumen ? { resumen } : {}) } satisfies Resultado<T>);
 
 export const fallo = (error: string): string => JSON.stringify({ ok: false, error } satisfies Resultado<never>);
 

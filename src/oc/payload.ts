@@ -6,7 +6,8 @@ import { type OrdenCompra, OrdenCompraSchema, type Paquete, type Validacion } fr
 export const MAX_DESCRIPCION = 40;
 
 /** Origen de cada valor del payload (HU-3: todo valor es trazable). */
-export type Fuente = "solicitud" | "cotizacion" | "correo" | "aprobacion" | "derivado" | "constante" | `maestro.${string}`;
+/** Las fuentes que admite el PRD (HU-3); el detalle va en `nota`. */
+export type Fuente = "solicitud" | "cotizacion" | "derivado" | `maestro.${string}`;
 
 export interface Trazabilidad {
   [campo: string]: { valor: unknown; fuente: Fuente; nota?: string };
@@ -80,15 +81,15 @@ export function construirPayload(e: EntradaPayload): { orden: OrdenCompra; traza
 
   const trazabilidad: Trazabilidad = {
     "referencia.solicitud_id": { valor: s.solicitud_id, fuente: "solicitud" },
-    "referencia.correo_id": { valor: p.correo.id, fuente: "correo" },
+    "referencia.correo_id": { valor: p.correo.id, fuente: "solicitud", nota: "Identificador del correo con que llegó la solicitud" },
     "referencia.cotizacion_ref": { valor: orden.referencia.cotizacion_ref, fuente: "cotizacion" },
-    sociedad: { valor: "1000", fuente: "constante", nota: "Sociedad única de Periferia en SAP" },
-    organizacion_compras: { valor: "1000", fuente: "constante" },
+    sociedad: { valor: "1000", fuente: "derivado", nota: "Constante de configuración: sociedad única de Periferia en SAP" },
+    organizacion_compras: { valor: "1000", fuente: "derivado", nota: "Constante de configuración" },
     proveedor: { valor: orden.proveedor, fuente: "maestro.proveedores" },
     moneda: { valor: s.moneda, fuente: "solicitud" },
     condiciones_pago: { valor: pago, ...deriv("condiciones_pago") },
-    "aprobador.email": { valor: aprobacion.de, fuente: "aprobacion" },
-    "aprobador.fecha_aprobacion": { valor: aprobacion.fecha, fuente: "aprobacion" },
+    "aprobador.email": { valor: aprobacion.de, fuente: "maestro.centros-costo", nota: "Remitente del correo de aprobación, verificado como aprobador del centro (RC2)" },
+    "aprobador.fecha_aprobacion": { valor: aprobacion.fecha, fuente: "solicitud", nota: "Fecha del correo de aprobación adjunto a la solicitud" },
     "aprobador.evidencia_sha256": { valor: e.evidenciaSha256, fuente: "derivado", nota: "sha256 de out/<caso>/aprobacion.txt" },
     "posiciones[0].descripcion": { valor: orden.posiciones[0]?.descripcion, fuente: "solicitud", nota: `Texto breve SAP (máx. ${MAX_DESCRIPCION})` },
     "posiciones[0].cantidad": { valor: s.cantidad, fuente: "solicitud" },

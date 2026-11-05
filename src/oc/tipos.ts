@@ -44,7 +44,8 @@ export const PaqueteSchema = z.object({
       referencia: z.string().nullable(),
       proveedor: z.string(),
       nit: z.string().nullable(),
-      total: z.number(),
+      /** `null` si el total no se pudo leer del texto. */
+      total: z.number().nullable(),
       moneda: z.string(),
       validez_hasta: z.string().nullable(),
       texto: z.string(),
@@ -58,7 +59,7 @@ export const PaqueteSchema = z.object({
       texto: z.string(),
     })
     .nullable(),
-  factura: z.object({ numero: z.string(), fecha: z.string(), total: z.number() }).nullable(),
+  factura: z.object({ numero: z.string(), fecha: z.string(), total: z.number().nullable() }).nullable(),
 });
 export type Paquete = z.infer<typeof PaqueteSchema>;
 

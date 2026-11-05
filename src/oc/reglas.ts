@@ -139,29 +139,30 @@ function rc4Subarea(p: Paquete, centro: CentroCosto | undefined, inf: Informe) {
 /** RC5: la cotización no difiere más del 2 % de la solicitud. */
 function rc5Cotizacion(p: Paquete, inf: Informe) {
   const { valor_total } = p.solicitud;
-  if (!p.cotizacion || !Number.isFinite(p.cotizacion.total)) {
+  const total = p.cotizacion?.total ?? null;
+  if (!p.cotizacion || total === null || !Number.isFinite(total)) {
     return inf.confirmacion({
       regla: "RC5",
       detalle: p.cotizacion ? "No se pudo leer el total de la cotización." : "La solicitud llegó sin cotización del proveedor.",
       accion_sugerida: "Confirmar que se acepta crear la OC sin contrastar con la cotización.",
     });
   }
-  const diferencia = Math.abs(p.cotizacion.total - valor_total) / valor_total;
+  const diferencia = Math.abs(total - valor_total) / valor_total;
   const pct = `${(diferencia * 100).toFixed(2)} %`;
   if (diferencia > TOLERANCIA_COTIZACION) {
     return inf.confirmacion({
       regla: "RC5",
-      detalle: `La cotización (${cop(p.cotizacion.total)}) difiere ${pct} (${cop(Math.abs(p.cotizacion.total - valor_total))}) de la solicitud (${cop(valor_total)}); el máximo es 2 %.`,
+      detalle: `La cotización (${cop(total)}) difiere ${pct} (${cop(Math.abs(total - valor_total))}) de la solicitud (${cop(valor_total)}); el máximo es 2 %.`,
       accion_sugerida: "Confirmar el valor de la solicitud o pedir una solicitud corregida.",
       valores: {
         solicitud: valor_total,
-        cotizacion: p.cotizacion.total,
-        diferencia_valor: p.cotizacion.total - valor_total,
+        cotizacion: total,
+        diferencia_valor: total - valor_total,
         diferencia_pct: Number((diferencia * 100).toFixed(2)),
       },
     });
   }
-  inf.ok("RC5", `Cotización ${cop(p.cotizacion.total)} vs. solicitud ${cop(valor_total)}: diferencia ${pct}.`);
+  inf.ok("RC5", `Cotización ${cop(total)} vs. solicitud ${cop(valor_total)}: diferencia ${pct}.`);
 }
 
 /** RC6 y RC7: indicador de IVA y condiciones de pago; si faltan, se derivan del proveedor. */

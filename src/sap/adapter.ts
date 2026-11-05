@@ -7,5 +7,6 @@ import type { OrdenCompra } from "../oc/tipos";
 export interface SapAdapter {
   consultarProveedor(nit: string): Promise<{ codigo_sap: string; activo: boolean } | null>;
   crearOrden(orden: OrdenCompra): Promise<{ numero_oc: string; fecha: string }>;
-  buscarOrdenPorReferencia(solicitud_id: string): Promise<{ numero_oc: string } | null>;
+  /** `fecha` es una extensión opcional (compatible con el contrato del PRD) para informar cuándo se creó. */
+  buscarOrdenPorReferencia(solicitud_id: string): Promise<{ numero_oc: string; fecha?: string } | null>;
 }
