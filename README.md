@@ -6,6 +6,8 @@ Agente que lee el paquete de cada solicitud de compra (solicitud, cotización, a
 - **Planteamiento de la solución:** [`SOLUCION.md`](SOLUCION.md)
 - **PRD del reto:** [`docs/PRD.md`](docs/PRD.md)
 
+La interfaz se explica sola: la pantalla inicial muestra cómo funciona, ejemplos con lo que se puede esperar y los datos de prueba disponibles, y el botón **Guía de uso** abre un manual con las confirmaciones, la lectura de la pantalla, los resultados y los límites. El contenido de la guía está en `src/presentacion.ts`.
+
 ## Puesta en marcha (un comando)
 
 ```bash

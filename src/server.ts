@@ -89,7 +89,8 @@ const servidor = Bun.serve({
   routes: {
     "/": index,
     "/api/health": () => Response.json({ ok: true, provider: agente.llm.proveedor, model: agente.llm.modelo }),
-    "/api/info": () => Response.json({ ...presentacion, proveedor: agente.llm.proveedor, modelo: agente.llm.modelo }),
+    "/api/info": () =>
+      Response.json({ ...presentacion, proveedor: agente.llm.proveedor, modelo: agente.llm.modelo, fechaReferencia: config.fechaReferencia }),
     "/api/herramientas": () =>
       Response.json(agente.herramientas.map((h) => ({ nombre: h.nombre, descripcion: h.herramienta.description }))),
     "/api/chat": { POST: chat },

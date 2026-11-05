@@ -213,8 +213,10 @@ svg {
 
 /* ── Bienvenida ─────────────────────────────────────────────── */
 .bienvenida {
-  margin-block: auto;
-  padding-block: 24px;
+  padding-block: 8px 24px;
+}
+
+.bienvenida-cabecera {
   text-align: center;
 }
 
@@ -226,8 +228,8 @@ svg {
 }
 
 .bienvenida-texto {
-  max-width: 620px;
-  margin: 0 auto 28px;
+  max-width: 640px;
+  margin: 0 auto 24px;
   color: var(--texto-2);
 }
 
@@ -272,29 +274,6 @@ svg {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.principios {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 24px;
-  margin: 28px 0 0;
-  padding: 0;
-  list-style: none;
-  font-size: 13px;
-  color: var(--texto-3);
-}
-
-.principios li {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.principios svg {
-  width: 16px;
-  height: 16px;
 }
 
 /* ── Mensajes ───────────────────────────────────────────────── */
@@ -799,4 +778,476 @@ svg {
   .trabajando {
     padding-left: 0;
   }
+}
+
+/* ── Guía en la bienvenida ──────────────────────────────────── */
+.como-funciona {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.como-funciona li {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.como-funciona .num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--marca-suave);
+  color: var(--marca);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.como-funciona strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.como-funciona span:not(.num) {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--texto-2);
+  line-height: 1.4;
+}
+
+.seccion-titulo {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-3);
+}
+
+.sugerencia .espera {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--borde);
+  font-size: 12.5px;
+  color: var(--texto-2);
+  -webkit-line-clamp: unset;
+}
+
+.sugerencia .espera b {
+  color: var(--marca);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.casos-bloque {
+  margin-top: 28px;
+}
+
+.casos-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.pista {
+  font-size: 12.5px;
+  color: var(--texto-3);
+  margin-bottom: 10px;
+}
+
+.casos {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.caso {
+  display: grid;
+  grid-template-columns: minmax(150px, auto) 1fr auto;
+  align-items: center;
+  gap: 4px 16px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--borde);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.caso:last-child {
+  border-bottom: 0;
+}
+
+.caso:hover {
+  background: var(--superficie-2);
+}
+
+.caso code {
+  font: 600 13px ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.caso .desc {
+  font-size: 13.5px;
+  color: var(--texto-2);
+}
+
+.etiqueta {
+  justify-self: end;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.etiqueta.ok {
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.etiqueta.confirmar {
+  background: var(--aviso-suave);
+  color: var(--aviso);
+}
+
+.etiqueta.bloqueo {
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+.etiqueta.info {
+  background: var(--superficie-2);
+  color: var(--texto-2);
+}
+
+.enlace,
+.enlace-pequeno {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--marca);
+  font: inherit;
+  cursor: pointer;
+}
+
+.enlace {
+  display: block;
+  margin: 20px auto 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.enlace:hover,
+.enlace-pequeno:hover {
+  text-decoration: underline;
+}
+
+.enlace-pequeno {
+  font-size: 12px;
+}
+
+/* ── Sugerencias para continuar ─────────────────────────────── */
+.continuar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-left: 40px;
+}
+
+.continuar > span {
+  font-size: 12.5px;
+  color: var(--texto-3);
+}
+
+.chip {
+  padding: 6px 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 999px;
+  color: var(--texto);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--marca);
+  color: var(--marca);
+}
+
+/* ── Manual lateral ─────────────────────────────────────────── */
+.velo {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.35);
+  z-index: 10;
+}
+
+.guia {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--superficie);
+  border-left: 1px solid var(--borde);
+  box-shadow: -12px 0 32px rgba(16, 24, 40, 0.12);
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+  z-index: 11;
+  outline: none;
+}
+
+.guia.abierta {
+  transform: translateX(0);
+}
+
+.guia-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.guia-cabecera h2 {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn-icono {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--superficie);
+  color: var(--texto-2);
+  cursor: pointer;
+}
+
+.btn-icono:hover {
+  background: var(--superficie-2);
+}
+
+.guia-cuerpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 24px 32px;
+  font-size: 14px;
+}
+
+.guia-cuerpo section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.guia-cuerpo section:last-child {
+  border-bottom: 0;
+}
+
+.guia-cuerpo h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.guia-cuerpo p {
+  margin: 0;
+  color: var(--texto-2);
+}
+
+.guia-cuerpo ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--texto-2);
+}
+
+.guia-cuerpo li + li {
+  margin-top: 6px;
+}
+
+.guia-ejemplo {
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+}
+
+.guia-ejemplo + .guia-ejemplo {
+  margin-top: 8px;
+}
+
+.guia-ejemplo q {
+  display: block;
+  font-size: 13.5px;
+  color: var(--texto);
+  quotes: "«" "»";
+}
+
+.guia-ejemplo .espera {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--texto-2);
+}
+
+.guia-ejemplo .espera b {
+  color: var(--marca);
+}
+
+.guia-ejemplo .chip {
+  margin-top: 8px;
+  padding: 3px 10px;
+  font-size: 12.5px;
+}
+
+.leyenda {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--texto-2);
+}
+
+.leyenda .paso-icono {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.leyenda .paso-icono svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+}
+
+.leyenda .i-listo {
+  background: var(--exito-suave);
+  color: var(--exito);
+}
+
+.leyenda .i-confirmar {
+  background: var(--aviso);
+  color: var(--superficie);
+}
+
+.leyenda .i-fallo {
+  background: var(--error-suave);
+  color: var(--error);
+}
+
+.rutas {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.rutas dt {
+  font: 600 12.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.rutas dd {
+  margin: 0 0 4px;
+  color: var(--texto-2);
+  font-size: 13.5px;
+}
+
+@media (max-width: 760px) {
+  .como-funciona {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .caso {
+    grid-template-columns: 1fr auto;
+  }
+
+  .caso .desc {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .barra-acciones .btn span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .como-funciona {
+    grid-template-columns: 1fr;
+  }
+
+  .continuar {
+    padding-left: 0;
+  }
+}
+
+/* "Qué esperar" se lee completo (no hereda el recorte de dos líneas de la sugerencia). */
+.sugerencia .espera span {
+  display: inline;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* El manual cerrado no se ve ni recibe foco; su sombra solo aparece al abrirlo. */
+.guia {
+  visibility: hidden;
+  box-shadow: none;
+  transition:
+    transform 0.2s ease,
+    visibility 0.2s;
+}
+
+.guia.abierta {
+  visibility: visible;
+  box-shadow: -12px 0 32px rgba(16, 24, 40, 0.12);
+}
+
+/* En el manual, cada dato de prueba ocupa dos líneas: código y resultado, y debajo la descripción. */
+.guia .caso {
+  grid-template-columns: 1fr auto;
+}
+
+.guia .caso .desc {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.guia .etiqueta {
+  white-space: normal;
+  text-align: right;
 }

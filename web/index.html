@@ -24,6 +24,10 @@
             <span class="punto" aria-hidden="true"></span>
             <span id="estado-texto">Conectando…</span>
           </span>
+          <button type="button" class="btn btn-secundario" id="abrir-guia" aria-controls="guia">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 3.5h8.5a3 3 0 0 1 3 3V17H7a3 3 0 0 1-3-3z" /><path d="M4 14a3 3 0 0 1 3-3h8.5" /></svg>
+            <span>Guía de uso</span>
+          </button>
           <button type="button" class="btn btn-secundario" id="reset">
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg>
             <span>Nueva conversación</span>
@@ -33,23 +37,42 @@
 
       <main class="hilo" id="log" aria-live="polite">
         <section class="bienvenida" id="empty">
-          <h1>¿Qué quieres hacer hoy?</h1>
-          <p class="bienvenida-texto" id="descripcion"></p>
+          <div class="bienvenida-cabecera">
+            <h1>¿Qué quieres hacer hoy?</h1>
+            <p class="bienvenida-texto" id="descripcion"></p>
+          </div>
+
+          <ol class="como-funciona" aria-label="Cómo funciona">
+            <li>
+              <span class="num">1</span>
+              <div><strong>Escribe o elige un ejemplo</strong><span>Pídelo en lenguaje natural y menciona el caso.</span></div>
+            </li>
+            <li>
+              <span class="num">2</span>
+              <div><strong>El agente consulta las fuentes</strong><span>Verás cada paso que da y su resultado.</span></div>
+            </li>
+            <li>
+              <span class="num">3</span>
+              <div><strong>Revisa la respuesta</strong><span>Resume lo encontrado, con tablas y lo que falta.</span></div>
+            </li>
+            <li>
+              <span class="num">4</span>
+              <div><strong>Tú decides lo importante</strong><span>Las acciones con excepciones esperan tu confirmación.</span></div>
+            </li>
+          </ol>
+
+          <h2 class="seccion-titulo">Prueba con un ejemplo</h2>
           <div class="sugerencias" id="sugerencias"></div>
-          <ul class="principios">
-            <li>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" /><circle cx="10" cy="10" r="2" /></svg>
-              Cada paso del agente queda visible
-            </li>
-            <li>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 3v5c0 4-3 6.5-6 8-3-1.5-6-4-6-8V5z" /></svg>
-              Nada se ejecuta sin tu confirmación
-            </li>
-            <li>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4h12v12H4z" /><path d="M7 8h6M7 11h6M7 14h3" /></svg>
-              Los datos salen de las fuentes, no del modelo
-            </li>
-          </ul>
+
+          <div class="casos-bloque">
+            <div class="casos-cabecera">
+              <h2 class="seccion-titulo">Datos de prueba disponibles</h2>
+              <span class="pista">Haz clic en uno para escribir la instrucción y editarla antes de enviar.</span>
+            </div>
+            <div class="casos" id="casos"></div>
+          </div>
+
+          <button type="button" class="enlace" id="ver-guia">Ver la guía completa: qué esperar, confirmaciones y resultados →</button>
         </section>
       </main>
 
@@ -61,11 +84,26 @@
           </button>
         </form>
         <div class="ayuda">
-          <span>Enter para enviar · Shift + Enter para una nueva línea</span>
+          <span>Enter para enviar · Shift + Enter para una nueva línea · <button type="button" class="enlace-pequeno" id="ayuda-guia">¿Qué puedo pedir?</button></span>
           <span id="uso"></span>
         </div>
       </footer>
     </div>
+
+    <div class="velo" id="velo" hidden></div>
+    <aside class="guia" id="guia" aria-label="Guía de uso" aria-hidden="true" tabindex="-1">
+      <div class="guia-cabecera">
+        <div>
+          <span class="reto">Guía de uso</span>
+          <h2 id="guia-titulo">Cómo usar el agente</h2>
+        </div>
+        <button type="button" class="btn-icono" id="cerrar-guia" aria-label="Cerrar la guía">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" /></svg>
+        </button>
+      </div>
+      <div class="guia-cuerpo" id="guia-cuerpo"></div>
+    </aside>
+
     <script type="module" src="./app.ts"></script>
   </body>
 </html>

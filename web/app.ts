@@ -1,14 +1,8 @@
 import type { Evento } from "../src/core/eventos";
+import type { Presentacion } from "../src/core/presentacion";
 import { markdown } from "./markdown";
 
-interface Info {
-  reto: string;
-  titulo: string;
-  descripcion: string;
-  sugerencias: { titulo: string; texto: string }[];
-  proveedor: string;
-  modelo: string;
-}
+type Info = Presentacion & { proveedor: string; modelo: string; fechaReferencia: string };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const hilo = $<HTMLElement>("log");
@@ -18,6 +12,8 @@ const input = $<HTMLTextAreaElement>("input");
 const enviar = $<HTMLButtonElement>("send");
 const reiniciar = $<HTMLButtonElement>("reset");
 const uso = $<HTMLElement>("uso");
+const guia = $<HTMLElement>("guia");
+const velo = $<HTMLElement>("velo");
 
 const ICONOS = {
   listo: '<svg viewBox="0 0 20 20"><path d="M5 10.5l3 3 7-7"/></svg>',
@@ -34,6 +30,9 @@ let ocupado = false;
 let turno: HTMLElement | null = null;
 let textoCrudo = "";
 const pasos = new Map<string, HTMLDetailsElement>();
+let info: Info | null = null;
+/** Instrucciones ya enviadas, para no volver a sugerirlas. */
+const enviados = new Set<string>();
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, clase?: string, texto?: string) {
   const nodo = document.createElement(tag);
@@ -189,6 +188,7 @@ function manejar(e: Evento) {
       const tokens = (u.tokensEntrada + u.tokensCache + u.tokensSalida).toLocaleString("es-CO");
       uso.textContent = u.llamadasModelo > 0 ? `Último turno: ${u.llamadasModelo} llamadas al modelo · ${tokens} tokens` : "";
       if (e.necesitaConfirmacion) pedirConfirmacion();
+      else sugerirContinuacion();
       break;
     }
   }
@@ -202,7 +202,28 @@ function indicadorTrabajando(): HTMLElement {
   return nodo;
 }
 
+/** Después de cada respuesta, propone instrucciones que todavía no se han probado. */
+function sugerirContinuacion() {
+  const opciones = (info?.sugerencias ?? []).filter((s) => !enviados.has(s.texto)).slice(0, 3);
+  if (opciones.length === 0) return;
+  const bloque = el("div", "continuar");
+  bloque.append(el("span", undefined, "Puedes seguir con:"));
+  for (const s of opciones) {
+    const chip = el("button", "chip", s.titulo);
+    chip.type = "button";
+    chip.title = s.texto;
+    chip.onclick = () => {
+      bloque.remove();
+      if (!ocupado) void enviarMensaje(s.texto);
+    };
+    bloque.append(chip);
+  }
+  agregar(bloque);
+}
+
 async function enviarMensaje(texto: string) {
+  enviados.add(texto);
+  for (const b of hilo.querySelectorAll(".continuar")) b.remove();
   const burbuja = el("div", "mensaje-usuario");
   burbuja.append(el("div", undefined, texto));
   agregar(burbuja);
@@ -274,6 +295,7 @@ reiniciar.addEventListener("click", async () => {
   await fetch(`/api/sessions/${sessionId}`, { method: "DELETE" }).catch(() => undefined);
   sessionId = crypto.randomUUID();
   pasos.clear();
+  enviados.clear();
   turno = null;
   hilo.replaceChildren(bienvenida);
   bienvenida.hidden = false;
@@ -281,12 +303,19 @@ reiniciar.addEventListener("click", async () => {
   input.focus();
 });
 
-function pintarSugerencias(info: Info) {
+/** "Qué esperar" de una instrucción, con la etiqueta destacada. */
+function queEsperar(texto: string): HTMLElement {
+  const nodo = el("span", "espera");
+  nodo.append(el("b", undefined, "Qué esperar:"), el("span", undefined, texto));
+  return nodo;
+}
+
+function pintarSugerencias(i: Info) {
   $<HTMLElement>("sugerencias").replaceChildren(
-    ...info.sugerencias.map((s) => {
+    ...i.sugerencias.slice(0, 4).map((s) => {
       const boton = el("button", "sugerencia");
       boton.type = "button";
-      boton.append(el("strong", undefined, s.titulo), el("span", undefined, s.texto));
+      boton.append(el("strong", undefined, s.titulo), el("span", undefined, s.texto), queEsperar(s.espera));
       boton.onclick = () => {
         if (!ocupado) void enviarMensaje(s.texto);
       };
@@ -295,17 +324,156 @@ function pintarSugerencias(info: Info) {
   );
 }
 
+/** Escribe la instrucción en la caja para que la persona la revise o la edite antes de enviarla. */
+function prepararInstruccion(texto: string) {
+  input.value = texto;
+  input.dispatchEvent(new Event("input"));
+  input.focus();
+  input.setSelectionRange(texto.length, texto.length);
+}
+
+function pintarCasos(i: Info) {
+  $<HTMLElement>("casos").replaceChildren(
+    ...i.casos.map((c) => {
+      const fila = el("button", "caso");
+      fila.type = "button";
+      fila.title = `Escribir: ${c.instruccion}`;
+      fila.append(el("code", undefined, c.id), el("span", "desc", c.descripcion), el("span", `etiqueta ${c.tono}`, c.resultado));
+      fila.onclick = () => prepararInstruccion(c.instruccion);
+      return fila;
+    }),
+  );
+}
+
+function seccion(titulo: string, ...contenido: HTMLElement[]): HTMLElement {
+  const s = el("section");
+  s.append(el("h3", undefined, titulo), ...contenido);
+  return s;
+}
+
+function lista(items: string[]): HTMLElement {
+  const ul = el("ul");
+  ul.append(...items.map((t) => el("li", undefined, t)));
+  return ul;
+}
+
+/** El manual lateral: todo lo que una persona nueva necesita para usar el agente. */
+function pintarGuia(i: Info) {
+  $<HTMLElement>("guia-titulo").textContent = i.titulo;
+  const ejemplos = el("div");
+  for (const s of i.sugerencias) {
+    const caja = el("div", "guia-ejemplo");
+    const probar = el("button", "chip", "Probar este ejemplo");
+    probar.type = "button";
+    probar.onclick = () => {
+      cerrarGuia();
+      if (!ocupado) void enviarMensaje(s.texto);
+    };
+    const espera = el("div", "espera");
+    espera.append(el("b", undefined, "Qué esperar: "), el("span", undefined, s.espera));
+    caja.append(el("strong", undefined, s.titulo), el("q", undefined, s.texto), espera, probar);
+    ejemplos.append(caja);
+  }
+
+  const casos = el("div", "casos");
+  for (const c of i.casos) {
+    const fila = el("button", "caso");
+    fila.type = "button";
+    fila.append(el("code", undefined, c.id), el("span", "desc", c.descripcion), el("span", `etiqueta ${c.tono}`, c.resultado));
+    fila.onclick = () => {
+      cerrarGuia();
+      prepararInstruccion(c.instruccion);
+    };
+    casos.append(fila);
+  }
+
+  const leyenda = el("ul", "leyenda");
+  const fila = (clase: string, icono: string, texto: string) => {
+    const li = el("li");
+    const ic = el("span", `paso-icono ${clase}`);
+    if (icono === "girando") ic.append(el("span", "girando"));
+    else ic.innerHTML = icono;
+    li.append(ic, el("span", undefined, texto));
+    return li;
+  };
+  leyenda.append(
+    fila("", "girando", "El agente está ejecutando ese paso."),
+    fila("i-listo", ICONOS.listo, "Paso completado. Debajo ves su resultado resumido."),
+    fila("i-confirmar", ICONOS.confirmar, "Hay algo que requiere tu decisión antes de continuar."),
+    fila("i-fallo", ICONOS.fallo, "El paso no se pudo completar; el agente explica por qué."),
+  );
+
+  const rutas = el("dl", "rutas");
+  for (const r of i.resultados) rutas.append(el("dt", undefined, r.ruta), el("dd", undefined, r.descripcion));
+
+  $<HTMLElement>("guia-cuerpo").replaceChildren(
+    seccion("Qué hace este agente", el("p", undefined, i.descripcion), lista(i.queHace)),
+    seccion(
+      "Cómo pedirle las cosas",
+      lista([
+        "Escribe en lenguaje natural, como le hablarías a una persona. Menciona el caso con su identificador.",
+        "Si quieres revisar antes de actuar, dilo: «muéstrame cómo quedaría y no lo hagas todavía».",
+        "Pide explicaciones cuando quieras: «¿por qué está bloqueado?», «¿qué falta?», «¿de dónde salió ese dato?».",
+        "Puedes pedir varios casos a la vez: «procesa todos y dame un resumen». Tardará más.",
+        "Cuando el agente te pregunte algo, responde «Confirmo» o «No» (o usa los botones).",
+      ]),
+    ),
+    seccion("Ejemplos y qué esperar", ejemplos),
+    seccion("Datos de prueba", el("p", undefined, "Haz clic en uno para escribir la instrucción en la caja de mensaje."), casos),
+    seccion("Confirmaciones: tú decides", el("p", undefined, i.confirmaciones)),
+    seccion(
+      "Cómo leer la pantalla",
+      el("p", undefined, "Cada respuesta muestra primero los pasos que dio el agente. Haz clic en «Detalle» para ver qué datos usó y qué devolvió cada paso."),
+      leyenda,
+    ),
+    seccion("Dónde quedan los resultados", el("p", undefined, "Los archivos se generan en la carpeta out/ del servidor:"), rutas),
+    seccion(
+      "Límites",
+      lista([
+        `Fecha de referencia: ${i.fechaReferencia}. Se usa para vigencias, vencimientos y fechas de registro.`,
+        "Los datos son ficticios: son los de la prueba técnica.",
+        "Usa la capa gratuita de Gemini: con mucha demanda puede tardar o pedirte esperar un minuto.",
+        "Cada conversación tiene un tope de uso; «Nueva conversación» empieza de cero. Al recargar la página también.",
+      ]),
+    ),
+  );
+}
+
+function abrirGuia() {
+  velo.hidden = false;
+  guia.classList.add("abierta");
+  guia.setAttribute("aria-hidden", "false");
+  guia.focus();
+}
+
+function cerrarGuia() {
+  velo.hidden = true;
+  guia.classList.remove("abierta");
+  guia.setAttribute("aria-hidden", "true");
+}
+
+for (const id of ["abrir-guia", "ver-guia", "ayuda-guia"]) $<HTMLButtonElement>(id).addEventListener("click", abrirGuia);
+$<HTMLButtonElement>("cerrar-guia").addEventListener("click", cerrarGuia);
+velo.addEventListener("click", cerrarGuia);
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape" && guia.classList.contains("abierta")) cerrarGuia();
+});
+
 fetch("/api/info")
   .then((r) => r.json() as Promise<Info>)
-  .then((info) => {
-    document.title = `${info.titulo} · ${info.reto}`;
-    $<HTMLElement>("reto").textContent = `${info.reto} · Periferia IT Group`;
-    $<HTMLElement>("titulo").textContent = info.titulo;
-    $<HTMLElement>("descripcion").textContent = info.descripcion;
-    const proveedor = info.proveedor.charAt(0).toUpperCase() + info.proveedor.slice(1);
-    $<HTMLElement>("estado-texto").textContent = `${proveedor} · ${info.modelo}`;
+  .then((datos) => {
+    info = datos;
+    document.title = `${datos.titulo} · ${datos.reto}`;
+    $<HTMLElement>("reto").textContent = `${datos.reto} · Periferia IT Group`;
+    $<HTMLElement>("titulo").textContent = datos.titulo;
+    $<HTMLElement>("descripcion").textContent = datos.descripcion;
+    input.placeholder = datos.placeholder;
+    const proveedor = datos.proveedor.charAt(0).toUpperCase() + datos.proveedor.slice(1);
+    $<HTMLElement>("estado-texto").textContent = `${proveedor} · ${datos.modelo}`;
     $<HTMLElement>("estado").classList.add("ok");
-    pintarSugerencias(info);
+    pintarSugerencias(datos);
+    pintarCasos(datos);
+    pintarGuia(datos);
   })
   .catch(() => {
     $<HTMLElement>("estado-texto").textContent = "Sin conexión con el servidor";
